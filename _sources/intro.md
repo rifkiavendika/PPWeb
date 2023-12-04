@@ -1,5 +1,5 @@
 # Welcome to Kumpulan Tugasku
-
+## Rifki Avendika - 170411100030
 <!--This is a small sample book to give you a feel for how book content is-->
 <!--structured.-->
 <!--It shows off a few of the major file types, as well as some sample content.-->
@@ -7,7 +7,7 @@
 
 <!--Check out the content pages bundled with this sample book to see more.-->
 
-## Apa itu pencarian dan penambangan web?
+### Apa itu pencarian dan penambangan web?
 Pencarian dan penambangan web adalah dua konsep terkait tetapi berbeda dalam dunia online. Berikut adalah penjelasan singkat untuk keduanya:
 
 1. **Pencarian Web (Web Search):**
