@@ -176,8 +176,8 @@ const thebe_selector_output = ".output, .cell_output"
 
 
 
-<li class="toctree-l1"><a class="reference internal" href="tugas2.html">Crawling Data Politik</a></li>
 
+<li class="toctree-l1"><a class="reference internal" href="tugas2.html">Crawling Data Politik</a></li>
 
 
 
@@ -416,10 +416,17 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Crawling Berita PTA</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#preprocessing">Preprocessing</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#casefolding">CaseFolding</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tokenisasi"><strong>Tokenisasi</strong></a></li>
+</ul>
+</li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-extraction">Feature Extraction</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#word2vec">Word2Vec</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pemodelan-topik">Pemodelan Topik</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#klastering">Klastering</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#klastering">Klastering</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ringkasan-dokumen">#Ringkasan Dokumen</a></li>
+</ul>
+</li>
 </ul>
 
             </nav>
@@ -446,9 +453,7 @@ document.write(`
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting bs4
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Downloading bs4-0.0.1.tar.gz (1.1 kB)
+  Downloading bs4-0.0.1.tar.gz (1.1 kB)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Preparing metadata (setup.py) ... ?25l?25hdone
@@ -458,7 +463,7 @@ Building wheels for collected packages: bs4
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Building wheel for bs4 (setup.py) ... ?25l?25hdone
-  Created wheel for bs4: filename=bs4-0.0.1-py3-none-any.whl size=1256 sha256=4c513a52a9e82b9f3a21373413a62a81be0b599d1103952639d5af7a29887b71
+  Created wheel for bs4: filename=bs4-0.0.1-py3-none-any.whl size=1256 sha256=00538dfbb704a0fb609bc68b61cf036c3ee0fcf512413b62fa600ab884192760
   Stored in directory: /root/.cache/pip/wheels/25/42/45/b773edc52acb16cd2db4cf1a0b47117e2f69bb4eb300ed0e70
 Successfully built bs4
 </pre></div>
@@ -538,7 +543,7 @@ Successfully installed bs4-0.0.1
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html">
-  <div id="df-2de156b3-ccee-4a2f-9446-d01020ad6d2f" class="colab-df-container">
+  <div id="df-081143b7-a30c-459e-9253-d010a8f2ca75" class="colab-df-container">
     <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -611,7 +616,7 @@ Successfully installed bs4-0.0.1
     <div class="colab-df-buttons">
       
   <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-2de156b3-ccee-4a2f-9446-d01020ad6d2f')"
+    <button class="colab-df-convert" onclick="convertToInteractive('df-081143b7-a30c-459e-9253-d010a8f2ca75')"
             title="Convert this dataframe to an interactive table."
             style="display:none;">
       
@@ -663,12 +668,12 @@ Successfully installed bs4-0.0.1
 
     <script>
       const buttonEl =
-        document.querySelector('#df-2de156b3-ccee-4a2f-9446-d01020ad6d2f button.colab-df-convert');
+        document.querySelector('#df-081143b7-a30c-459e-9253-d010a8f2ca75 button.colab-df-convert');
       buttonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
 
       async function convertToInteractive(key) {
-        const element = document.querySelector('#df-2de156b3-ccee-4a2f-9446-d01020ad6d2f');
+        const element = document.querySelector('#df-081143b7-a30c-459e-9253-d010a8f2ca75');
         const dataTable =
           await google.colab.kernel.invokeFunction('convertToInteractive',
                                                     [key], {});
@@ -702,6 +707,7 @@ Successfully installed bs4-0.0.1
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="preprocessing">
 <h1>Preprocessing<a class="headerlink" href="#preprocessing" title="Permalink to this heading">#</a></h1>
+<hr class="docutils" />
 <p>Preprocessing (pra-pemrosesan) adalah langkah penting dalam rangkaian persiapan data untuk berbagai tugas, seperti pembelajaran mesin, pemrosesan bahasa alami, dan analisis data. Tujuan dari pra-pemrosesan adalah membersihkan, mengubah, dan mengorganisir data mentah ke dalam format yang sesuai untuk analisis lebih lanjut atau pelatihan model</p>
 <p><strong>Import File CSV Crawling</strong></p>
 <div class="cell docutils container">
@@ -720,7 +726,7 @@ Successfully installed bs4-0.0.1
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html">
-  <div id="df-5940d915-6b89-4ba8-aba6-0166cfd1c8a0" class="colab-df-container">
+  <div id="df-20eb6576-7706-42ba-98f3-998eda565165" class="colab-df-container">
     <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -793,7 +799,7 @@ Successfully installed bs4-0.0.1
     <div class="colab-df-buttons">
       
   <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-5940d915-6b89-4ba8-aba6-0166cfd1c8a0')"
+    <button class="colab-df-convert" onclick="convertToInteractive('df-20eb6576-7706-42ba-98f3-998eda565165')"
             title="Convert this dataframe to an interactive table."
             style="display:none;">
       
@@ -845,12 +851,12 @@ Successfully installed bs4-0.0.1
 
     <script>
       const buttonEl =
-        document.querySelector('#df-5940d915-6b89-4ba8-aba6-0166cfd1c8a0 button.colab-df-convert');
+        document.querySelector('#df-20eb6576-7706-42ba-98f3-998eda565165 button.colab-df-convert');
       buttonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
 
       async function convertToInteractive(key) {
-        const element = document.querySelector('#df-5940d915-6b89-4ba8-aba6-0166cfd1c8a0');
+        const element = document.querySelector('#df-20eb6576-7706-42ba-98f3-998eda565165');
         const dataTable =
           await google.colab.kernel.invokeFunction('convertToInteractive',
                                                     [key], {});
@@ -873,7 +879,10 @@ Successfully installed bs4-0.0.1
   </div>
   </div></div>
 </div>
-<p><strong>CaseFolding</strong></p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="casefolding">
+<h1>CaseFolding<a class="headerlink" href="#casefolding" title="Permalink to this heading">#</a></h1>
+<hr class="docutils" />
 <p>metode pengolahan teks yang bertujuan untuk membuat teks menjadi lebih seragam dengan mengonversi semua huruf ke dalam bentuk tertentu. Pada umumnya, metode ini melibatkan pengonversian semua huruf teks menjadi huruf kecil atau huruf besar.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -891,7 +900,7 @@ Successfully installed bs4-0.0.1
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html">
-  <div id="df-c5d9b672-9074-4abe-8281-0eb658cfb061" class="colab-df-container">
+  <div id="df-efe043e4-b887-4f3d-8130-8f72f719a9b5" class="colab-df-container">
     <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -970,7 +979,7 @@ Successfully installed bs4-0.0.1
     <div class="colab-df-buttons">
       
   <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-c5d9b672-9074-4abe-8281-0eb658cfb061')"
+    <button class="colab-df-convert" onclick="convertToInteractive('df-efe043e4-b887-4f3d-8130-8f72f719a9b5')"
             title="Convert this dataframe to an interactive table."
             style="display:none;">
       
@@ -1022,12 +1031,12 @@ Successfully installed bs4-0.0.1
 
     <script>
       const buttonEl =
-        document.querySelector('#df-c5d9b672-9074-4abe-8281-0eb658cfb061 button.colab-df-convert');
+        document.querySelector('#df-efe043e4-b887-4f3d-8130-8f72f719a9b5 button.colab-df-convert');
       buttonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
 
       async function convertToInteractive(key) {
-        const element = document.querySelector('#df-c5d9b672-9074-4abe-8281-0eb658cfb061');
+        const element = document.querySelector('#df-efe043e4-b887-4f3d-8130-8f72f719a9b5');
         const dataTable =
           await google.colab.kernel.invokeFunction('convertToInteractive',
                                                     [key], {});
@@ -1098,7 +1107,7 @@ Successfully installed bs4-0.0.1
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html">
-  <div id="df-eb96f951-b771-4441-a524-af660e8ec280" class="colab-df-container">
+  <div id="df-5b5914f7-f151-4136-8929-8d0b66bce0a5" class="colab-df-container">
     <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -1183,7 +1192,7 @@ Successfully installed bs4-0.0.1
     <div class="colab-df-buttons">
       
   <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-eb96f951-b771-4441-a524-af660e8ec280')"
+    <button class="colab-df-convert" onclick="convertToInteractive('df-5b5914f7-f151-4136-8929-8d0b66bce0a5')"
             title="Convert this dataframe to an interactive table."
             style="display:none;">
       
@@ -1235,12 +1244,12 @@ Successfully installed bs4-0.0.1
 
     <script>
       const buttonEl =
-        document.querySelector('#df-eb96f951-b771-4441-a524-af660e8ec280 button.colab-df-convert');
+        document.querySelector('#df-5b5914f7-f151-4136-8929-8d0b66bce0a5 button.colab-df-convert');
       buttonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
 
       async function convertToInteractive(key) {
-        const element = document.querySelector('#df-eb96f951-b771-4441-a524-af660e8ec280');
+        const element = document.querySelector('#df-5b5914f7-f151-4136-8929-8d0b66bce0a5');
         const dataTable =
           await google.colab.kernel.invokeFunction('convertToInteractive',
                                                     [key], {});
@@ -1263,7 +1272,8 @@ Successfully installed bs4-0.0.1
   </div>
   </div></div>
 </div>
-<p><strong>Tokenisasi</strong></p>
+<section id="tokenisasi">
+<h2><strong>Tokenisasi</strong><a class="headerlink" href="#tokenisasi" title="Permalink to this heading">#</a></h2>
 <p>yaitu memecah sebuah kalimat menjadi sebuah unit unit kecil atau per kata seperti contoh yaitu
 Saya Pergi Rumah Nenek ketika dilakukan proses ini akan menjadi :<br />
 Saya, Pergi, Rumah, Nenek</p>
@@ -1277,9 +1287,7 @@ Saya, Pergi, Rumah, Nenek</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[nltk_data] Downloading package punkt to /root/nltk_data...
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[nltk_data]   Unzipping tokenizers/punkt.zip.
+[nltk_data]   Unzipping tokenizers/punkt.zip.
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[nltk_data] Downloading package stopwords to /root/nltk_data...
@@ -1305,7 +1313,7 @@ Saya, Pergi, Rumah, Nenek</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html">
-  <div id="df-b86fb174-daa5-4251-8fe9-1fa58776281b" class="colab-df-container">
+  <div id="df-47fa8366-fbd0-480a-a5ae-922c76a37d71" class="colab-df-container">
     <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -1396,7 +1404,7 @@ Saya, Pergi, Rumah, Nenek</p>
     <div class="colab-df-buttons">
       
   <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-b86fb174-daa5-4251-8fe9-1fa58776281b')"
+    <button class="colab-df-convert" onclick="convertToInteractive('df-47fa8366-fbd0-480a-a5ae-922c76a37d71')"
             title="Convert this dataframe to an interactive table."
             style="display:none;">
       
@@ -1448,12 +1456,12 @@ Saya, Pergi, Rumah, Nenek</p>
 
     <script>
       const buttonEl =
-        document.querySelector('#df-b86fb174-daa5-4251-8fe9-1fa58776281b button.colab-df-convert');
+        document.querySelector('#df-47fa8366-fbd0-480a-a5ae-922c76a37d71 button.colab-df-convert');
       buttonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
 
       async function convertToInteractive(key) {
-        const element = document.querySelector('#df-b86fb174-daa5-4251-8fe9-1fa58776281b');
+        const element = document.querySelector('#df-47fa8366-fbd0-480a-a5ae-922c76a37d71');
         const dataTable =
           await google.colab.kernel.invokeFunction('convertToInteractive',
                                                     [key], {});
@@ -1530,7 +1538,7 @@ Requirement already satisfied: tqdm in /usr/local/lib/python3.10/dist-packages (
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html">
-  <div id="df-b850f971-a374-4150-bee1-f1de3a3d291a" class="colab-df-container">
+  <div id="df-c10e33a3-fb67-4752-ba0e-588f771c4fad" class="colab-df-container">
     <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -1627,7 +1635,7 @@ Requirement already satisfied: tqdm in /usr/local/lib/python3.10/dist-packages (
     <div class="colab-df-buttons">
       
   <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-b850f971-a374-4150-bee1-f1de3a3d291a')"
+    <button class="colab-df-convert" onclick="convertToInteractive('df-c10e33a3-fb67-4752-ba0e-588f771c4fad')"
             title="Convert this dataframe to an interactive table."
             style="display:none;">
       
@@ -1679,12 +1687,12 @@ Requirement already satisfied: tqdm in /usr/local/lib/python3.10/dist-packages (
 
     <script>
       const buttonEl =
-        document.querySelector('#df-b850f971-a374-4150-bee1-f1de3a3d291a button.colab-df-convert');
+        document.querySelector('#df-c10e33a3-fb67-4752-ba0e-588f771c4fad button.colab-df-convert');
       buttonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
 
       async function convertToInteractive(key) {
-        const element = document.querySelector('#df-b850f971-a374-4150-bee1-f1de3a3d291a');
+        const element = document.querySelector('#df-c10e33a3-fb67-4752-ba0e-588f771c4fad');
         const dataTable =
           await google.colab.kernel.invokeFunction('convertToInteractive',
                                                     [key], {});
@@ -1715,7 +1723,7 @@ Requirement already satisfied: tqdm in /usr/local/lib/python3.10/dist-packages (
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;sebegitu&#39;, &#39;malah&#39;, &#39;inginkah&#39;, &#39;buat&#39;, &#39;balik&#39;, &#39;cukup&#39;, &#39;melainkan&#39;, &#39;misalkan&#39;, &#39;soal&#39;, &#39;sebelumnya&#39;, &#39;saya&#39;, &#39;dimungkinkan&#39;, &#39;selaku&#39;, &#39;berapakah&#39;, &#39;kata&#39;, &#39;bawah&#39;, &#39;kamu&#39;, &#39;sebagian&#39;, &#39;disini&#39;, &#39;memberikan&#39;, &#39;sesuatunya&#39;, &#39;pertanyaan&#39;, &#39;bolehlah&#39;, &#39;masing-masing&#39;, &#39;menginginkan&#39;, &#39;belakangan&#39;, &#39;sekali-kali&#39;, &#39;diucapkannya&#39;, &#39;tanya&#39;, &#39;ternyata&#39;, &#39;berakhir&#39;, &#39;masa&#39;, &#39;perlukah&#39;, &#39;menghendaki&#39;, &#39;berikan&#39;, &#39;padanya&#39;, &#39;sebaliknya&#39;, &#39;umum&#39;, &#39;ditegaskan&#39;, &#39;sesampai&#39;, &#39;akulah&#39;, &#39;sebenarnya&#39;, &#39;diantara&#39;, &#39;selama&#39;, &#39;diantaranya&#39;, &#39;tandas&#39;, &#39;begitu&#39;, &#39;pertama-tama&#39;, &#39;pak&#39;, &#39;dari&#39;, &#39;dibuatnya&#39;, &#39;demikianlah&#39;, &#39;jauh&#39;, &#39;dirinya&#39;, &#39;sehingga&#39;, &#39;diibaratkannya&#39;, &#39;panjang&#39;, &#39;jawabnya&#39;, &#39;dimaksudkannya&#39;, &#39;tegasnya&#39;, &#39;mengibaratkannya&#39;, &#39;seingat&#39;, &#39;tersebut&#39;, &#39;sebagaimana&#39;, &#39;berlainan&#39;, &#39;dikerjakan&#39;, &#39;tidak&#39;, &#39;ditunjukkannya&#39;, &#39;toh&#39;, &#39;menyatakan&#39;, &#39;bahkan&#39;, &#39;dimulailah&#39;, &#39;kelihatan&#39;, &#39;mengucapkannya&#39;, &#39;jadi&#39;, &#39;mendatangi&#39;, &#39;kinilah&#39;, &#39;seberapa&#39;, &#39;berkeinginan&#39;, &#39;kini&#39;, &#39;amatlah&#39;, &#39;sekadar&#39;, &#39;ikut&#39;, &#39;secukupnya&#39;, &#39;caranya&#39;, &#39;bakal&#39;, &#39;diucapkan&#39;, &#39;keseluruhan&#39;, &#39;awal&#39;, &#39;percuma&#39;, &#39;keinginan&#39;, &#39;memihak&#39;, &#39;banyak&#39;, &#39;bukanlah&#39;, &#39;namun&#39;, &#39;rasa&#39;, &#39;ibarat&#39;, &#39;kapanpun&#39;, &#39;mempersiapkan&#39;, &#39;waktunya&#39;, &#39;agaknya&#39;, &#39;bertutur&#39;, &#39;misal&#39;, &#39;jumlahnya&#39;, &#39;bersama-sama&#39;, &#39;misalnya&#39;, &#39;semuanya&#39;, &#39;diibaratkan&#39;, &#39;mendatang&#39;, &#39;mengingat&#39;, &#39;berikut&#39;, &#39;dilihat&#39;, &#39;sebuah&#39;, &#39;tertentu&#39;, &#39;dipergunakan&#39;, &#39;sela&#39;, &#39;jawaban&#39;, &#39;ibu&#39;, &#39;terus&#39;, &#39;didatangkan&#39;, &#39;menjelaskan&#39;, &#39;seketika&#39;, &#39;mana&#39;, &#39;berlalu&#39;, &#39;jika&#39;, &#39;setibanya&#39;, &#39;sebaik-baiknya&#39;, &#39;tapi&#39;, &#39;menuju&#39;, &#39;demi&#39;, &#39;dituturkannya&#39;, &#39;pertama&#39;, &#39;awalnya&#39;, &#39;mengucapkan&#39;, &#39;menyampaikan&#39;, &#39;disebutkan&#39;, &#39;kalau&#39;, &#39;sejauh&#39;, &#39;sekalipun&#39;, &#39;sekiranya&#39;, &#39;kira-kira&#39;, &#39;katakanlah&#39;, &#39;andalah&#39;, &#39;dimaksudnya&#39;, &#39;selalu&#39;, &#39;tambah&#39;, &#39;tersampaikan&#39;, &#39;sekitar&#39;, &#39;terhadapnya&#39;, &#39;akhir&#39;, &#39;per&#39;, &#39;perlu&#39;, &#39;tengah&#39;, &#39;inikah&#39;, &#39;kan&#39;, &#39;dimisalkan&#39;, &#39;katanya&#39;, &#39;seperlunya&#39;, &#39;jumlah&#39;, &#39;ini&#39;, &#39;sendirian&#39;, &#39;belakang&#39;, &#39;menyiapkan&#39;, &#39;kalian&#39;, &#39;kecil&#39;, &#39;melakukan&#39;, &#39;diperlukannya&#39;, &#39;asalkan&#39;, &#39;berlangsung&#39;, &#39;sampai&#39;, &#39;bukannya&#39;, &#39;memang&#39;, &#39;cuma&#39;, &#39;yaitu&#39;, &#39;sendiri&#39;, &#39;dalam&#39;, &#39;lagi&#39;, &#39;tersebutlah&#39;, &#39;seolah&#39;, &#39;diperbuatnya&#39;, &#39;kalaulah&#39;, &#39;semisal&#39;, &#39;mengerjakan&#39;, &#39;keseluruhannya&#39;, &#39;memungkinkan&#39;, &#39;rata&#39;, &#39;justru&#39;, &#39;umumnya&#39;, &#39;dipertanyakan&#39;, &#39;bagian&#39;, &#39;berakhirlah&#39;, &#39;menjadi&#39;, &#39;siapakah&#39;, &#39;selain&#39;, &#39;menunjuki&#39;, &#39;seluruhnya&#39;, &#39;sesegera&#39;, &#39;itu&#39;, &#39;tambahnya&#39;, &#39;termasuk&#39;, &#39;meski&#39;, &#39;hingga&#39;, &#39;memerlukan&#39;, &#39;menanyai&#39;, &#39;berkehendak&#39;, &#39;bersiap-siap&#39;, &#39;rupanya&#39;, &#39;terlihat&#39;, &#39;secara&#39;, &#39;lima&#39;, &#39;nyaris&#39;, &#39;sudahlah&#39;, &#39;sekurangnya&#39;, &#39;sekali&#39;, &#39;baik&#39;, &#39;cukuplah&#39;, &#39;pasti&#39;, &#39;berikutnya&#39;, &#39;keluar&#39;, &#39;tanpa&#39;, &#39;janganlah&#39;, &#39;manalagi&#39;, &#39;tetap&#39;, &#39;mungkin&#39;, &#39;ditandaskan&#39;, &#39;hendak&#39;, &#39;sebaik&#39;, &#39;sebutlah&#39;, &#39;terjadi&#39;, &#39;dipersoalkan&#39;, &#39;sebabnya&#39;, &#39;itukah&#39;, &#39;bekerja&#39;, &#39;semampu&#39;, &#39;dapat&#39;, &#39;cukupkah&#39;, &#39;semua&#39;, &#39;bermacam-macam&#39;, &#39;kita&#39;, &#39;diberikan&#39;, &#39;menanti&#39;, &#39;yakin&#39;, &#39;tentu&#39;, &#39;diberi&#39;, &#39;entahlah&#39;, &#39;boleh&#39;, &#39;mengenai&#39;, &#39;sesudah&#39;, &#39;ada&#39;, &#39;diperbuat&#39;, &#39;mempunyai&#39;, &#39;walau&#39;, &#39;tidakkah&#39;, &#39;harusnya&#39;, &#39;berapapun&#39;, &#39;sepantasnyalah&#39;, &#39;harus&#39;, &#39;naik&#39;, &#39;tertuju&#39;, &#39;bersama&#39;, &#39;sedikitnya&#39;, &#39;sepantasnya&#39;, &#39;sinilah&#39;, &#39;beginilah&#39;, &#39;betul&#39;, &#39;tinggi&#39;, &#39;ibaratkan&#39;, &#39;ditambahkan&#39;, &#39;maupun&#39;, &#39;ditanyai&#39;, &#39;jelaskan&#39;, &#39;antara&#39;, &#39;dekat&#39;, &#39;kala&#39;, &#39;mulai&#39;, &#39;ataupun&#39;, &#39;begitupun&#39;, &#39;ungkapnya&#39;, &#39;lanjut&#39;, &#39;berawal&#39;, &#39;tak&#39;, &#39;hal&#39;, &#39;ucap&#39;, &#39;atas&#39;, &#39;dijelaskan&#39;, &#39;bisa&#39;, &#39;se&#39;, &#39;apalagi&#39;, &#39;sebut&#39;, &#39;menyangkut&#39;, &#39;hari&#39;, &#39;seterusnya&#39;, &#39;beri&#39;, &#39;terutama&#39;, &#39;semakin&#39;, &#39;tampaknya&#39;, &#39;sedemikian&#39;, &#39;jangankan&#39;, &#39;beberapa&#39;, &#39;ditunjuknya&#39;, &#39;kasus&#39;, &#39;dituturkan&#39;, &#39;punya&#39;, &#39;dikatakannya&#39;, &#39;sendirinya&#39;, &#39;setiap&#39;, &#39;padahal&#39;, &#39;menandaskan&#39;, &#39;segala&#39;, &#39;setengah&#39;, &#39;siapa&#39;, &#39;bila&#39;, &#39;mengetahui&#39;, &#39;tentunya&#39;, &#39;siap&#39;, &#39;setidak-tidaknya&#39;, &#39;supaya&#39;, &#39;lebih&#39;, &#39;memperkirakan&#39;, &#39;perlunya&#39;, &#39;pentingnya&#39;, &#39;menaiki&#39;, &#39;menunjuk&#39;, &#39;sejenak&#39;, &#39;di&#39;, &#39;jelas&#39;, &#39;lagian&#39;, &#39;disebutkannya&#39;, &#39;disebut&#39;, &#39;berakhirnya&#39;, &#39;kamilah&#39;, &#39;lain&#39;, &#39;tahu&#39;, &#39;berturut&#39;, &#39;untuk&#39;, &#39;kelima&#39;, &#39;akankah&#39;, &#39;semisalnya&#39;, &#39;kesampaian&#39;, &#39;bermacam&#39;, &#39;seolah-olah&#39;, &#39;malahan&#39;, &#39;terdahulu&#39;, &#39;terjadilah&#39;, &#39;meskipun&#39;, &#39;bung&#39;, &#39;ketika&#39;, &#39;sini&#39;, &#39;diperlukan&#39;, &#39;amat&#39;, &#39;olehnya&#39;, &#39;bertanya&#39;, &#39;sebagainya&#39;, &#39;terasa&#39;, &#39;melihat&#39;, &#39;mungkinkah&#39;, &#39;sepertinya&#39;, &#39;ditunjuk&#39;, &#39;tahun&#39;, &#39;apabila&#39;, &#39;atau&#39;, &#39;kira&#39;, &#39;sering&#39;, &#39;kok&#39;, &#39;tetapi&#39;, &#39;ditunjuki&#39;, &#39;antar&#39;, &#39;ke&#39;, &#39;nyatanya&#39;, &#39;tanyanya&#39;, &#39;nah&#39;, &#39;diakhiri&#39;, &#39;disinilah&#39;, &#39;bagaimanakah&#39;, &#39;bagaimanapun&#39;, &#39;pantas&#39;, &#39;seharusnya&#39;, &#39;sayalah&#39;, &#39;dikira&#39;, &#39;sudahkah&#39;, &#39;berujar&#39;, &#39;masing&#39;, &#39;kembali&#39;, &#39;diungkapkan&#39;, &#39;serupa&#39;, &#39;sekarang&#39;, &#39;usah&#39;, &#39;sebisanya&#39;, &#39;mendatangkan&#39;, &#39;memulai&#39;, &#39;tadinya&#39;, &#39;dia&#39;, &#39;guna&#39;, &#39;kemungkinan&#39;, &#39;oleh&#39;, &#39;mengakhiri&#39;, &#39;tiap&#39;, &#39;dua&#39;, &#39;jawab&#39;, &#39;kitalah&#39;, &#39;pihak&#39;, &#39;terbanyak&#39;, &#39;tiga&#39;, &#39;selama-lamanya&#39;, &#39;antaranya&#39;, &#39;meminta&#39;, &#39;kalaupun&#39;, &#39;mampukah&#39;, &#39;jelaslah&#39;, &#39;para&#39;, &#39;ataukah&#39;, &#39;besar&#39;, &#39;mengingatkan&#39;, &#39;semaunya&#39;, &#39;ucapnya&#39;, &#39;begitulah&#39;, &#39;jangan&#39;, &#39;baru&#39;, &#39;menurut&#39;, &#39;hendaklah&#39;, &#39;saja&#39;, &#39;semata-mata&#39;, &#39;diingat&#39;, &#39;waktu&#39;, &#39;segera&#39;, &#39;jelasnya&#39;, &#39;hanyalah&#39;, &#39;diinginkan&#39;, &#39;merasa&#39;, &#39;memintakan&#39;, &#39;akhiri&#39;, &#39;saatnya&#39;, &#39;seenaknya&#39;, &#39;seseorang&#39;, &#39;sebutnya&#39;, &#39;sekaligus&#39;, &#39;hampir&#39;, &#39;dong&#39;, &#39;terdapat&#39;, &#39;walaupun&#39;, &#39;mengira&#39;, &#39;paling&#39;, &#39;yakni&#39;, &#39;kelamaan&#39;, &#39;selamanya&#39;, &#39;dipastikan&#39;, &#39;sangatlah&#39;, &#39;sejak&#39;, &#39;setidaknya&#39;, &#39;aku&#39;, &#39;dimaksudkan&#39;, &#39;pada&#39;, &#39;betulkah&#39;, &#39;keadaan&#39;, &#39;menggunakan&#39;, &#39;sebelum&#39;, &#39;kapankah&#39;, &#39;terhadap&#39;, &#39;akan&#39;, &#39;biasanya&#39;, &#39;karenanya&#39;, &#39;menyeluruh&#39;, &#39;menegaskan&#39;, &#39;usai&#39;, &#39;bagaikan&#39;, &#39;wong&#39;, &#39;sebanyak&#39;, &#39;agak&#39;, &#39;adanya&#39;, &#39;mampu&#39;, &#39;macam&#39;, &#39;berkata&#39;, &#39;datang&#39;, &#39;itulah&#39;, &#39;berdatangan&#39;, &#39;sementara&#39;, &#39;jadinya&#39;, &#39;masih&#39;, &#39;sepihak&#39;, &#39;demikian&#39;, &#39;masalah&#39;, &#39;selanjutnya&#39;, &#39;beginikah&#39;, &#39;saat&#39;, &#39;lalu&#39;, &#39;membuat&#39;, &#39;bertanya-tanya&#39;, &#39;dibuat&#39;, &#39;tidaklah&#39;, &#39;dimaksud&#39;, &#39;berbagai&#39;, &#39;tadi&#39;, &#39;dini&#39;, &#39;keduanya&#39;, &#39;memastikan&#39;, &#39;sekurang-kurangnya&#39;, &#39;beginian&#39;, &#39;pula&#39;, &#39;diperlihatkan&#39;, &#39;pastilah&#39;, &#39;waduh&#39;, &#39;suatu&#39;, &#39;dipunyai&#39;, &#39;memperlihatkan&#39;, &#39;wah&#39;, &#39;minta&#39;, &#39;disampaikan&#39;, &#39;cara&#39;, &#39;bagai&#39;, &#39;wahai&#39;, &#39;adapun&#39;, &#39;mempersoalkan&#39;, &#39;dijelaskannya&#39;, &#39;entah&#39;, &#39;kepada&#39;, &#39;kemudian&#39;, &#39;tampak&#39;, &#39;meyakini&#39;, &#39;setelah&#39;, &#39;kamulah&#39;, &#39;menunjuknya&#39;, &#39;mulanya&#39;, &#39;dan&#39;, &#39;sampaikan&#39;, &#39;tentulah&#39;, &#39;kepadanya&#39;, &#39;makin&#39;, &#39;pihaknya&#39;, &#39;dimintai&#39;, &#39;masalahnya&#39;, &#39;yang&#39;, &#39;sesekali&#39;, &#39;diingatkan&#39;, &#39;setinggi&#39;, &#39;tepat&#39;, &#39;menanyakan&#39;, &#39;berada&#39;, &#39;ujarnya&#39;, &#39;meyakinkan&#39;, &#39;sebesar&#39;, &#39;bahwa&#39;, &#39;enggak&#39;, &#39;dengan&#39;, &#39;bermula&#39;, &#39;mendapatkan&#39;, &#39;seusai&#39;, &#39;ingat-ingat&#39;, &#39;mempertanyakan&#39;, &#39;depan&#39;, &#39;telah&#39;, &#39;berjumlah&#39;, &#39;enggaknya&#39;, &#39;sudah&#39;, &#39;diakhirinya&#39;, &#39;sebegini&#39;, &#39;menantikan&#39;, &#39;menambahkan&#39;, &#39;segalanya&#39;, &#39;seluruh&#39;, &#39;didapat&#39;, &#39;tutur&#39;, &#39;tempat&#39;, &#39;siapapun&#39;, &#39;bersiap&#39;, &#39;menjawab&#39;, &#39;mendapat&#39;, &#39;tegas&#39;, &#39;sana&#39;, &#39;ingat&#39;, &#39;sempat&#39;, &#39;mirip&#39;, &#39;inginkan&#39;, &#39;manakala&#39;, &#39;menanya&#39;, &#39;semula&#39;, &#39;bahwasanya&#39;, &#39;lama&#39;, &#39;apa&#39;, &#39;nanti&#39;, &#39;diperkirakan&#39;, &#39;diketahuinya&#39;, &#39;mempergunakan&#39;, &#39;sedang&#39;, &#39;seorang&#39;, &#39;sesudahnya&#39;, &#39;dahulu&#39;, &#39;bulan&#39;, &#39;lah&#39;, &#39;sesama&#39;, &#39;kemungkinannya&#39;, &#39;bukan&#39;, &#39;kurang&#39;, &#39;katakan&#39;, &#39;bagi&#39;, &#39;ialah&#39;, &#39;tiba-tiba&#39;, &#39;ibaratnya&#39;, &#39;bilakah&#39;, &#39;tandasnya&#39;, &#39;dilalui&#39;, &#39;berlebihan&#39;, &#39;benarlah&#39;, &#39;dimulai&#39;, &#39;lainnya&#39;, &#39;lanjutnya&#39;, &#39;mereka&#39;, &#39;sekitarnya&#39;, &#39;semata&#39;, &#39;pukul&#39;, &#39;menunjukkan&#39;, &#39;semasih&#39;, &#39;mengatakannya&#39;, &#39;agar&#39;, &#39;serta&#39;, &#39;setempat&#39;, &#39;teringat-ingat&#39;, &#39;sebetulnya&#39;, &#39;dialah&#39;, &#39;mengungkapkan&#39;, &#39;diberikannya&#39;, &#39;kiranya&#39;, &#39;tentang&#39;, &#39;bolehkah&#39;, &#39;biasa&#39;, &#39;empat&#39;, &#39;sambil&#39;, &#39;sebab&#39;, &#39;diminta&#39;, &#39;ditanyakan&#39;, &#39;apakah&#39;, &#39;begini&#39;, &#39;seperti&#39;, &#39;kelihatannya&#39;, &#39;mulailah&#39;, &#39;sekadarnya&#39;, &#39;nantinya&#39;, &#39;sebaiknya&#39;, &#39;berapalah&#39;, &#39;semacam&#39;, &#39;ditanya&#39;, &#39;menanti-nanti&#39;, &#39;sama-sama&#39;, &#39;berupa&#39;, &#39;ujar&#39;, &#39;dikarenakan&#39;, &#39;kenapa&#39;, &#39;kedua&#39;, &#39;berapa&#39;, &#39;bagaimana&#39;, &#39;pertanyakan&#39;, &#39;akhirnya&#39;, &#39;sebagai&#39;, &#39;sangat&#39;, &#39;sekecil&#39;, &#39;jadilah&#39;, &#39;tunjuk&#39;, &#39;ditujukan&#39;, &#39;adalah&#39;, &#39;bermaksud&#39;, &#39;soalnya&#39;, &#39;haruslah&#39;, &#39;keterlaluan&#39;, &#39;ditunjukkan&#39;, &#39;belum&#39;, &#39;inilah&#39;, &#39;asal&#39;, &#39;tiba&#39;, &#39;sesaat&#39;, &#39;benarkah&#39;, &#39;masihkah&#39;, &#39;sedikit&#39;, &#39;persoalan&#39;, &#39;makanya&#39;, &#39;bakalan&#39;, &#39;sedangkan&#39;, &#39;apatah&#39;, &#39;bukankah&#39;, &#39;diketahui&#39;, &#39;bisakah&#39;, &#39;begitukah&#39;, &#39;mula&#39;, &#39;kebetulan&#39;, &#39;memberi&#39;, &#39;terjadinya&#39;, &#39;mengapa&#39;, &#39;berkenaan&#39;, &#39;merupakan&#39;, &#39;khususnya&#39;, &#39;satu&#39;, &#39;lewat&#39;, &#39;sepanjang&#39;, &#39;tuturnya&#39;, &#39;terlebih&#39;, &#39;artinya&#39;, &#39;jikalau&#39;, &#39;hanya&#39;, &#39;bapak&#39;, &#39;diri&#39;, &#39;pun&#39;, &#39;rasanya&#39;, &#39;setiba&#39;, &#39;ungkap&#39;, &#39;luar&#39;, &#39;seringnya&#39;, &#39;dikatakan&#39;, &#39;memperbuat&#39;, &#39;mau&#39;, &#39;teringat&#39;, &#39;digunakan&#39;, &#39;saling&#39;, &#39;terakhir&#39;, &#39;terlalu&#39;, &#39;anda&#39;, &#39;melalui&#39;, &#39;berkali-kali&#39;, &#39;terkira&#39;, &#39;daripada&#39;, &#39;juga&#39;, &#39;dijawab&#39;, &#39;maka&#39;, &#39;penting&#39;, &#39;kapan&#39;, &#39;semampunya&#39;, &#39;ingin&#39;, &#39;dimulainya&#39;, &#39;gunakan&#39;, &#39;pernah&#39;, &#39;ia&#39;, &#39;semasa&#39;, &#39;sampai-sampai&#39;, &#39;menuturkan&#39;, &#39;dilakukan&#39;, &#39;turut&#39;, &#39;karena&#39;, &#39;sama&#39;, &#39;sejumlah&#39;, &#39;sekalian&#39;, &#39;sesuatu&#39;, &#39;terdiri&#39;, &#39;dulu&#39;, &#39;berturut-turut&#39;, &#39;melihatnya&#39;, &#39;benar&#39;, &#39;sajalah&#39;, &#39;mengatakan&#39;, &#39;merekalah&#39;, &#39;kami&#39;, &#39;sewaktu&#39;, &#39;hendaknya&#39;, &#39;apaan&#39;, &#39;belumlah&#39;, &#39;mengibaratkan&#39;, &#39;menyebutkan&#39;, &#39;berarti&#39;, &#39;lamanya&#39;, &#39;memisalkan&#39;, &#39;tanyakan&#39;}
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;dahulu&#39;, &#39;ibaratkan&#39;, &#39;sepantasnyalah&#39;, &#39;bakal&#39;, &#39;ikut&#39;, &#39;diketahuinya&#39;, &#39;mendatangkan&#39;, &#39;pak&#39;, &#39;tadi&#39;, &#39;menghendaki&#39;, &#39;dimisalkan&#39;, &#39;menyebutkan&#39;, &#39;kalau&#39;, &#39;sebetulnya&#39;, &#39;ucapnya&#39;, &#39;dipersoalkan&#39;, &#39;terdapat&#39;, &#39;mendatang&#39;, &#39;kita&#39;, &#39;mulanya&#39;, &#39;manalagi&#39;, &#39;diminta&#39;, &#39;ujar&#39;, &#39;dimulai&#39;, &#39;diucapkan&#39;, &#39;jangan&#39;, &#39;sampaikan&#39;, &#39;sepantasnya&#39;, &#39;seringnya&#39;, &#39;diucapkannya&#39;, &#39;dimulailah&#39;, &#39;tentulah&#39;, &#39;terlalu&#39;, &#39;menyiapkan&#39;, &#39;keadaan&#39;, &#39;terus&#39;, &#39;amat&#39;, &#39;dilalui&#39;, &#39;dikira&#39;, &#39;artinya&#39;, &#39;tidakkah&#39;, &#39;diperlukannya&#39;, &#39;keseluruhannya&#39;, &#39;panjang&#39;, &#39;itukah&#39;, &#39;boleh&#39;, &#39;berapakah&#39;, &#39;soalnya&#39;, &#39;sebutnya&#39;, &#39;masing&#39;, &#39;sewaktu&#39;, &#39;berakhirlah&#39;, &#39;memberi&#39;, &#39;dia&#39;, &#39;secara&#39;, &#39;secukupnya&#39;, &#39;kelamaan&#39;, &#39;meyakini&#39;, &#39;terjadilah&#39;, &#39;kenapa&#39;, &#39;tandas&#39;, &#39;jauh&#39;, &#39;menantikan&#39;, &#39;berada&#39;, &#39;terjadinya&#39;, &#39;bapak&#39;, &#39;kalaulah&#39;, &#39;mengucapkan&#39;, &#39;empat&#39;, &#39;mengenai&#39;, &#39;mengatakan&#39;, &#39;sedang&#39;, &#39;sekurang-kurangnya&#39;, &#39;inginkan&#39;, &#39;mengapa&#39;, &#39;lima&#39;, &#39;lebih&#39;, &#39;lewat&#39;, &#39;selalu&#39;, &#39;ketika&#39;, &#39;berlainan&#39;, &#39;asalkan&#39;, &#39;kepadanya&#39;, &#39;memastikan&#39;, &#39;ucap&#39;, &#39;menuturkan&#39;, &#39;berkeinginan&#39;, &#39;janganlah&#39;, &#39;menyangkut&#39;, &#39;berkali-kali&#39;, &#39;ingat&#39;, &#39;sekadarnya&#39;, &#39;adanya&#39;, &#39;begitulah&#39;, &#39;berkata&#39;, &#39;caranya&#39;, &#39;mengungkapkan&#39;, &#39;setibanya&#39;, &#39;disebutkannya&#39;, &#39;selanjutnya&#39;, &#39;datang&#39;, &#39;diperbuatnya&#39;, &#39;jawaban&#39;, &#39;mengibaratkan&#39;, &#39;punya&#39;, &#39;menunjuknya&#39;, &#39;sebanyak&#39;, &#39;sebelumnya&#39;, &#39;masih&#39;, &#39;sajalah&#39;, &#39;dikatakan&#39;, &#39;inikah&#39;, &#39;sebaliknya&#39;, &#39;semakin&#39;, &#39;menjawab&#39;, &#39;meminta&#39;, &#39;menuju&#39;, &#39;menanyakan&#39;, &#39;bolehlah&#39;, &#39;seketika&#39;, &#39;kamu&#39;, &#39;sesegera&#39;, &#39;disampaikan&#39;, &#39;tepat&#39;, &#39;terjadi&#39;, &#39;sebut&#39;, &#39;lain&#39;, &#39;serupa&#39;, &#39;bagai&#39;, &#39;sesudah&#39;, &#39;tiba&#39;, &#39;para&#39;, &#39;balik&#39;, &#39;ia&#39;, &#39;awal&#39;, &#39;sedikitnya&#39;, &#39;seusai&#39;, &#39;asal&#39;, &#39;diungkapkan&#39;, &#39;ibaratnya&#39;, &#39;jangankan&#39;, &#39;berarti&#39;, &#39;setidak-tidaknya&#39;, &#39;malah&#39;, &#39;menggunakan&#39;, &#39;sebegini&#39;, &#39;bagian&#39;, &#39;sesampai&#39;, &#39;memintakan&#39;, &#39;berbagai&#39;, &#39;dimaksudkannya&#39;, &#39;semuanya&#39;, &#39;kesampaian&#39;, &#39;menunjuki&#39;, &#39;dialah&#39;, &#39;menjadi&#39;, &#39;mempersoalkan&#39;, &#39;ialah&#39;, &#39;tanya&#39;, &#39;seluruhnya&#39;, &#39;dulu&#39;, &#39;ditambahkan&#39;, &#39;terhadap&#39;, &#39;tiap&#39;, &#39;misalkan&#39;, &#39;saya&#39;, &#39;diantaranya&#39;, &#39;sendirian&#39;, &#39;waktunya&#39;, &#39;sebagainya&#39;, &#39;sebab&#39;, &#39;tutur&#39;, &#39;bisa&#39;, &#39;kok&#39;, &#39;sering&#39;, &#39;bertanya-tanya&#39;, &#39;biasanya&#39;, &#39;ataukah&#39;, &#39;oleh&#39;, &#39;pertama-tama&#39;, &#39;berikan&#39;, &#39;meski&#39;, &#39;kalaupun&#39;, &#39;merupakan&#39;, &#39;keseluruhan&#39;, &#39;bersama-sama&#39;, &#39;pertanyakan&#39;, &#39;ditunjukkannya&#39;, &#39;sudahkah&#39;, &#39;mengingat&#39;, &#39;melalui&#39;, &#39;kalian&#39;, &#39;diakhiri&#39;, &#39;teringat-ingat&#39;, &#39;menginginkan&#39;, &#39;dilihat&#39;, &#39;tanyakan&#39;, &#39;sinilah&#39;, &#39;tersampaikan&#39;, &#39;memperkirakan&#39;, &#39;tanpa&#39;, &#39;tempat&#39;, &#39;per&#39;, &#39;diperlukan&#39;, &#39;mungkinkah&#39;, &#39;terlebih&#39;, &#39;mengira&#39;, &#39;cara&#39;, &#39;kedua&#39;, &#39;ditanyai&#39;, &#39;benarkah&#39;, &#39;seolah&#39;, &#39;didatangkan&#39;, &#39;tahu&#39;, &#39;umum&#39;, &#39;ditegaskan&#39;, &#39;jelasnya&#39;, &#39;bahwa&#39;, &#39;mempertanyakan&#39;, &#39;berikutnya&#39;, &#39;menurut&#39;, &#39;betulkah&#39;, &#39;kala&#39;, &#39;jawabnya&#39;, &#39;sebagaimana&#39;, &#39;itulah&#39;, &#39;sempat&#39;, &#39;sekitar&#39;, &#39;diperlihatkan&#39;, &#39;ke&#39;, &#39;hendaklah&#39;, &#39;mempergunakan&#39;, &#39;juga&#39;, &#39;entah&#39;, &#39;sampai&#39;, &#39;seseorang&#39;, &#39;itu&#39;, &#39;pernah&#39;, &#39;dimaksudnya&#39;, &#39;adalah&#39;, &#39;ternyata&#39;, &#39;harus&#39;, &#39;bertutur&#39;, &#39;dekat&#39;, &#39;tambah&#39;, &#39;gunakan&#39;, &#39;menyampaikan&#39;, &#39;teringat&#39;, &#39;ditunjukkan&#39;, &#39;semua&#39;, &#39;bagaimanapun&#39;, &#39;membuat&#39;, &#39;waduh&#39;, &#39;lama&#39;, &#39;seterusnya&#39;, &#39;dikatakannya&#39;, &#39;demikian&#39;, &#39;hampir&#39;, &#39;berapapun&#39;, &#39;diperbuat&#39;, &#39;seperti&#39;, &#39;hanyalah&#39;, &#39;kira&#39;, &#39;sama-sama&#39;, &#39;menanti-nanti&#39;, &#39;lamanya&#39;, &#39;segera&#39;, &#39;keduanya&#39;, &#39;bermacam&#39;, &#39;lagi&#39;, &#39;sekadar&#39;, &#39;didapat&#39;, &#39;sebabnya&#39;, &#39;sekurangnya&#39;, &#39;tahun&#39;, &#39;menunjukkan&#39;, &#39;belumlah&#39;, &#39;akhiri&#39;, &#39;memang&#39;, &#39;pada&#39;, &#39;jelaslah&#39;, &#39;nanti&#39;, &#39;persoalan&#39;, &#39;karenanya&#39;, &#39;apa&#39;, &#39;jadi&#39;, &#39;kamulah&#39;, &#39;sesekali&#39;, &#39;misal&#39;, &#39;bulan&#39;, &#39;di&#39;, &#39;masa&#39;, &#39;sebaik&#39;, &#39;baik&#39;, &#39;bukan&#39;, &#39;ditandaskan&#39;, &#39;diibaratkannya&#39;, &#39;terutama&#39;, &#39;kapanpun&#39;, &#39;memperlihatkan&#39;, &#39;pentingnya&#39;, &#39;yakin&#39;, &#39;kapankah&#39;, &#39;menanya&#39;, &#39;khususnya&#39;, &#39;maka&#39;, &#39;baru&#39;, &#39;sebenarnya&#39;, &#39;semasih&#39;, &#39;tunjuk&#39;, &#39;ungkap&#39;, &#39;lainnya&#39;, &#39;semacam&#39;, &#39;awalnya&#39;, &#39;semaunya&#39;, &#39;meyakinkan&#39;, &#39;kelima&#39;, &#39;inginkah&#39;, &#39;nyaris&#39;, &#39;sekalipun&#39;, &#39;suatu&#39;, &#39;kelihatan&#39;, &#39;sekaligus&#39;, &#39;berlebihan&#39;, &#39;setelah&#39;, &#39;kasus&#39;, &#39;mau&#39;, &#39;siapakah&#39;, &#39;antar&#39;, &#39;ini&#39;, &#39;sebaiknya&#39;, &#39;siap&#39;, &#39;cuma&#39;, &#39;kapan&#39;, &#39;padahal&#39;, &#39;nah&#39;, &#39;sendirinya&#39;, &#39;rasanya&#39;, &#39;beberapa&#39;, &#39;perlukah&#39;, &#39;berkehendak&#39;, &#39;tiga&#39;, &#39;bagaikan&#39;, &#39;berkenaan&#39;, &#39;dari&#39;, &#39;mengingatkan&#39;, &#39;rupanya&#39;, &#39;sesaat&#39;, &#39;cukup&#39;, &#39;antara&#39;, &#39;nantinya&#39;, &#39;setengah&#39;, &#39;tersebut&#39;, &#39;jadinya&#39;, &#39;memperbuat&#39;, &#39;bolehkah&#39;, &#39;ditanya&#39;, &#39;sudahlah&#39;, &#39;dipunyai&#39;, &#39;satu&#39;, &#39;sejumlah&#39;, &#39;sebuah&#39;, &#39;kami&#39;, &#39;anda&#39;, &#39;tentu&#39;, &#39;sudah&#39;, &#39;memungkinkan&#39;, &#39;akan&#39;, &#39;dijelaskannya&#39;, &#39;tampaknya&#39;, &#39;sebelum&#39;, &#39;setiap&#39;, &#39;sendiri&#39;, &#39;dipastikan&#39;, &#39;diri&#39;, &#39;dimungkinkan&#39;, &#39;sepertinya&#39;, &#39;terakhir&#39;, &#39;dini&#39;, &#39;olehnya&#39;, &#39;sana&#39;, &#39;semampu&#39;, &#39;makanya&#39;, &#39;demikianlah&#39;, &#39;termasuk&#39;, &#39;lalu&#39;, &#39;sebutlah&#39;, &#39;seolah-olah&#39;, &#39;agar&#39;, &#39;nyatanya&#39;, &#39;sekali&#39;, &#39;bertanya&#39;, &#39;sini&#39;, &#39;sela&#39;, &#39;guna&#39;, &#39;dipertanyakan&#39;, &#39;sangatlah&#39;, &#39;begitupun&#39;, &#39;kini&#39;, &#39;selamanya&#39;, &#39;tambahnya&#39;, &#39;bakalan&#39;, &#39;menanyai&#39;, &#39;semisal&#39;, &#39;hal&#39;, &#39;hanya&#39;, &#39;menyeluruh&#39;, &#39;dijelaskan&#39;, &#39;pantas&#39;, &#39;mengakhiri&#39;, &#39;mula&#39;, &#39;dengan&#39;, &#39;setinggi&#39;, &#39;mengerjakan&#39;, &#39;berlangsung&#39;, &#39;daripada&#39;, &#39;antaranya&#39;, &#39;menanti&#39;, &#39;menegaskan&#39;, &#39;tentunya&#39;, &#39;begitu&#39;, &#39;kepada&#39;, &#39;bilakah&#39;, &#39;atas&#39;, &#39;selama-lamanya&#39;, &#39;perlu&#39;, &#39;diantara&#39;, &#39;lanjutnya&#39;, &#39;sedikit&#39;, &#39;sangat&#39;, &#39;sekarang&#39;, &#39;merasa&#39;, &#39;penting&#39;, &#39;dilakukan&#39;, &#39;sesama&#39;, &#39;harusnya&#39;, &#39;akankah&#39;, &#39;sebesar&#39;, &#39;berjumlah&#39;, &#39;karena&#39;, &#39;bersiap&#39;, &#39;masalah&#39;, &#39;saat&#39;, &#39;lagian&#39;, &#39;sebaik-baiknya&#39;, &#39;berikut&#39;, &#39;tapi&#39;, &#39;kiranya&#39;, &#39;bermaksud&#39;, &#39;pula&#39;, &#39;tengah&#39;, &#39;beri&#39;, &#39;saatnya&#39;, &#39;akulah&#39;, &#39;walau&#39;, &#39;sebisanya&#39;, &#39;tidak&#39;, &#39;enggak&#39;, &#39;tanyanya&#39;, &#39;sama&#39;, &#39;untuk&#39;, &#39;memulai&#39;, &#39;bukanlah&#39;, &#39;mengucapkannya&#39;, &#39;beginikah&#39;, &#39;bermacam-macam&#39;, &#39;apalagi&#39;, &#39;bawah&#39;, &#39;justru&#39;, &#39;kinilah&#39;, &#39;mana&#39;, &#39;disinilah&#39;, &#39;mengibaratkannya&#39;, &#39;saja&#39;, &#39;hingga&#39;, &#39;sekalian&#39;, &#39;percuma&#39;, &#39;perlunya&#39;, &#39;agaknya&#39;, &#39;agak&#39;, &#39;mungkin&#39;, &#39;wong&#39;, &#39;dikerjakan&#39;, &#39;jawab&#39;, &#39;terkira&#39;, &#39;menyatakan&#39;, &#39;tuturnya&#39;, &#39;bung&#39;, &#39;tersebutlah&#39;, &#39;soal&#39;, &#39;siapapun&#39;, &#39;terdiri&#39;, &#39;mendapat&#39;, &#39;namun&#39;, &#39;enggaknya&#39;, &#39;sepihak&#39;, &#39;kembali&#39;, &#39;sesudahnya&#39;, &#39;begitukah&#39;, &#39;disebut&#39;, &#39;selama&#39;, &#39;mempersiapkan&#39;, &#39;dan&#39;, &#39;jumlah&#39;, &#39;menunjuk&#39;, &#39;naik&#39;, &#39;selain&#39;, &#39;jelaskan&#39;, &#39;rata&#39;, &#39;bagi&#39;, &#39;dapat&#39;, &#39;ditujukan&#39;, &#39;cukupkah&#39;, &#39;kemungkinan&#39;, &#39;masihkah&#39;, &#39;maupun&#39;, &#39;ada&#39;, &#39;dalam&#39;, &#39;inilah&#39;, &#39;seenaknya&#39;, &#39;sejauh&#39;, &#39;aku&#39;, &#39;katakanlah&#39;, &#39;pertama&#39;, &#39;tetap&#39;, &#39;yaitu&#39;, &#39;dituturkan&#39;, &#39;entahlah&#39;, &#39;jumlahnya&#39;, &#39;seluruh&#39;, &#39;apakah&#39;, &#39;kecil&#39;, &#39;kira-kira&#39;, &#39;semasa&#39;, &#39;dimaksudkan&#39;, &#39;ibu&#39;, &#39;ibarat&#39;, &#39;haruslah&#39;, &#39;berdatangan&#39;, &#39;diingatkan&#39;, &#39;berupa&#39;, &#39;tetapi&#39;, &#39;sejak&#39;, &#39;tampak&#39;, &#39;misalnya&#39;, &#39;akhir&#39;, &#39;umumnya&#39;, &#39;supaya&#39;, &#39;seingat&#39;, &#39;paling&#39;, &#39;begini&#39;, &#39;mirip&#39;, &#39;sedangkan&#39;, &#39;terbanyak&#39;, &#39;pun&#39;, &#39;beginian&#39;, &#39;ataupun&#39;, &#39;selaku&#39;, &#39;bahwasanya&#39;, &#39;menjelaskan&#39;, &#39;kelihatannya&#39;, &#39;pertanyaan&#39;, &#39;tertentu&#39;, &#39;mengatakannya&#39;, &#39;kitalah&#39;, &#39;dibuat&#39;, &#39;diperkirakan&#39;, &#39;semula&#39;, &#39;tadinya&#39;, &#39;semata-mata&#39;, &#39;andalah&#39;, &#39;dibuatnya&#39;, &#39;sedemikian&#39;, &#39;terhadapnya&#39;, &#39;walaupun&#39;, &#39;memisalkan&#39;, &#39;memberikan&#39;, &#39;merekalah&#39;, &#39;adapun&#39;, &#39;semampunya&#39;, &#39;jika&#39;, &#39;tentang&#39;, &#39;jelas&#39;, &#39;sementara&#39;, &#39;kamilah&#39;, &#39;padanya&#39;, &#39;yakni&#39;, &#39;jadilah&#39;, &#39;keterlaluan&#39;, &#39;serta&#39;, &#39;terlihat&#39;, &#39;setidaknya&#39;, &#39;ditunjuki&#39;, &#39;sambil&#39;, &#39;dua&#39;, &#39;kata&#39;, &#39;sekali-kali&#39;, &#39;ungkapnya&#39;, &#39;tinggi&#39;, &#39;bersama&#39;, &#39;menandaskan&#39;, &#39;bahkan&#39;, &#39;sebagian&#39;, &#39;setempat&#39;, &#39;bersiap-siap&#39;, &#39;diakhirinya&#39;, &#39;yang&#39;, &#39;diketahui&#39;, &#39;seperlunya&#39;, &#39;mempunyai&#39;, &#39;meskipun&#39;, &#39;katakan&#39;, &#39;keluar&#39;, &#39;akhirnya&#39;, &#39;saling&#39;, &#39;bagaimana&#39;, &#39;wahai&#39;, &#39;belakang&#39;, &#39;mulai&#39;, &#39;dong&#39;, &#39;sekiranya&#39;, &#39;dijawab&#39;, &#39;dirinya&#39;, &#39;bukankah&#39;, &#39;ingin&#39;, &#39;buat&#39;, &#39;ujarnya&#39;, &#39;belakangan&#39;, &#39;berakhir&#39;, &#39;siapa&#39;, &#39;apatah&#39;, &#39;pastilah&#39;, &#39;manakala&#39;, &#39;memerlukan&#39;, &#39;disebutkan&#39;, &#39;dimulainya&#39;, &#39;kemungkinannya&#39;, &#39;apabila&#39;, &#39;tegasnya&#39;, &#39;mereka&#39;, &#39;waktu&#39;, &#39;beginilah&#39;, &#39;dimintai&#39;, &#39;ditunjuknya&#39;, &#39;lanjut&#39;, &#39;digunakan&#39;, &#39;ditanyakan&#39;, &#39;atau&#39;, &#39;berakhirnya&#39;, &#39;usah&#39;, &#39;terdahulu&#39;, &#39;macam&#39;, &#39;besar&#39;, &#39;menambahkan&#39;, &#39;terasa&#39;, &#39;tiba-tiba&#39;, &#39;toh&#39;, &#39;lah&#39;, &#39;bukannya&#39;, &#39;tertuju&#39;, &#39;makin&#39;, &#39;masing-masing&#39;, &#39;pasti&#39;, &#39;wah&#39;, &#39;sebagai&#39;, &#39;belum&#39;, &#39;katanya&#39;, &#39;mendatangi&#39;, &#39;diingat&#39;, &#39;hari&#39;, &#39;kurang&#39;, &#39;memihak&#39;, &#39;sejenak&#39;, &#39;tak&#39;, &#39;berapalah&#39;, &#39;melihat&#39;, &#39;semisalnya&#39;, &#39;melihatnya&#39;, &#39;pihaknya&#39;, &#39;pihak&#39;, &#39;diibaratkan&#39;, &#39;kan&#39;, &#39;demi&#39;, &#39;bermula&#39;, &#39;hendaknya&#39;, &#39;berlalu&#39;, &#39;mampu&#39;, &#39;segalanya&#39;, &#39;setiba&#39;, &#39;melainkan&#39;, &#39;menaiki&#39;, &#39;betul&#39;, &#39;apaan&#39;, &#39;dipergunakan&#39;, &#39;semata&#39;, &#39;minta&#39;, &#39;bekerja&#39;, &#39;diinginkan&#39;, &#39;bila&#39;, &#39;cukuplah&#39;, &#39;keinginan&#39;, &#39;mulailah&#39;, &#39;hendak&#39;, &#39;kemudian&#39;, &#39;benar&#39;, &#39;benarlah&#39;, &#39;bagaimanakah&#39;, &#39;sesuatu&#39;, &#39;segala&#39;, &#39;masalahnya&#39;, &#39;jikalau&#39;, &#39;pukul&#39;, &#39;dimaksud&#39;, &#39;seharusnya&#39;, &#39;bisakah&#39;, &#39;diberi&#39;, &#39;usai&#39;, &#39;luar&#39;, &#39;berapa&#39;, &#39;tandasnya&#39;, &#39;sekitarnya&#39;, &#39;berturut-turut&#39;, &#39;mengetahui&#39;, &#39;disini&#39;, &#39;dituturkannya&#39;, &#39;turut&#39;, &#39;berawal&#39;, &#39;sebegitu&#39;, &#39;se&#39;, &#39;banyak&#39;, &#39;sampai-sampai&#39;, &#39;sepanjang&#39;, &#39;seberapa&#39;, &#39;diberikannya&#39;, &#39;seorang&#39;, &#39;ingat-ingat&#39;, &#39;telah&#39;, &#39;kebetulan&#39;, &#39;berujar&#39;, &#39;biasa&#39;, &#39;sayalah&#39;, &#39;tegas&#39;, &#39;dikarenakan&#39;, &#39;mampukah&#39;, &#39;mendapatkan&#39;, &#39;depan&#39;, &#39;tidaklah&#39;, &#39;diberikan&#39;, &#39;amatlah&#39;, &#39;sekecil&#39;, &#39;melakukan&#39;, &#39;berturut&#39;, &#39;malahan&#39;, &#39;sesuatunya&#39;, &#39;sehingga&#39;, &#39;ditunjuk&#39;, &#39;rasa&#39;}
 </pre></div>
 </div>
 </div>
@@ -1732,19 +1740,13 @@ Requirement already satisfied: tqdm in /usr/local/lib/python3.10/dist-packages (
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting Sastrawi
   Downloading Sastrawi-1.0.1-py2.py3-none-any.whl (209 kB)
 ?25l     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">0.0/209.7 kB</span> <span class=" -Color -Color-Red">?</span> eta <span class=" -Color -Color-Cyan">-:--:--</span>
-     ━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">30.7/209.7 kB</span> <span class=" -Color -Color-Red">640.2 kB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">41.0/209.7 kB</span> <span class=" -Color -Color-Red">688.5 kB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
-     ━━━━━━━━━━━━━━━━━━━━━━━━━╺━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">133.1/209.7 kB</span> <span class=" -Color -Color-Red">1.3 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">209.7/209.7 kB</span> <span class=" -Color -Color-Red">1.6 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╺ <span class=" -Color -Color-Green">204.8/209.7 kB</span> <span class=" -Color -Color-Red">6.3 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">209.7/209.7 kB</span> <span class=" -Color -Color-Red">5.1 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
 ?25h
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Installing collected packages: Sastrawi
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Successfully installed Sastrawi-1.0.1
+Successfully installed Sastrawi-1.0.1
 </pre></div>
 </div>
 </div>
@@ -1778,7 +1780,7 @@ Requirement already satisfied: tqdm in /usr/local/lib/python3.10/dist-packages (
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html">
-  <div id="df-3d1ffddc-97eb-4f96-97f0-0dde3a09a068" class="colab-df-container">
+  <div id="df-b19a6c90-7c2f-45b0-ade2-0701b40d0b0f" class="colab-df-container">
     <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -1881,7 +1883,7 @@ Requirement already satisfied: tqdm in /usr/local/lib/python3.10/dist-packages (
     <div class="colab-df-buttons">
       
   <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-3d1ffddc-97eb-4f96-97f0-0dde3a09a068')"
+    <button class="colab-df-convert" onclick="convertToInteractive('df-b19a6c90-7c2f-45b0-ade2-0701b40d0b0f')"
             title="Convert this dataframe to an interactive table."
             style="display:none;">
       
@@ -1933,12 +1935,12 @@ Requirement already satisfied: tqdm in /usr/local/lib/python3.10/dist-packages (
 
     <script>
       const buttonEl =
-        document.querySelector('#df-3d1ffddc-97eb-4f96-97f0-0dde3a09a068 button.colab-df-convert');
+        document.querySelector('#df-b19a6c90-7c2f-45b0-ade2-0701b40d0b0f button.colab-df-convert');
       buttonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
 
       async function convertToInteractive(key) {
-        const element = document.querySelector('#df-3d1ffddc-97eb-4f96-97f0-0dde3a09a068');
+        const element = document.querySelector('#df-b19a6c90-7c2f-45b0-ade2-0701b40d0b0f');
         const dataTable =
           await google.colab.kernel.invokeFunction('convertToInteractive',
                                                     [key], {});
@@ -1969,8 +1971,10 @@ Requirement already satisfied: tqdm in /usr/local/lib/python3.10/dist-packages (
 </div>
 </div>
 </section>
+</section>
 <section class="tex2jax_ignore mathjax_ignore" id="feature-extraction">
 <h1>Feature Extraction<a class="headerlink" href="#feature-extraction" title="Permalink to this heading">#</a></h1>
+<hr class="docutils" />
 <p>proses mengubah data mentah menjadi representasi fitur yang lebih sederhana, terdefinisi dengan baik, dan informatif. Dalam konteks machine learning, fitur adalah atribut-atribut tertentu dari data yang digunakan oleh model untuk membuat prediksi atau analisis. Proses feature extraction memainkan peran penting dalam meningkatkan kinerja model dengan menyederhanakan dan mempertahankan informasi penting dari data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2039,7 +2043,7 @@ Name: Teks, dtype: object
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html">
-  <div id="df-9646b23b-9163-4fa7-93d5-053bc73af951" class="colab-df-container">
+  <div id="df-54055154-7825-49cb-a4fd-b76e74aa39e3" class="colab-df-container">
     <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -2209,7 +2213,7 @@ Name: Teks, dtype: object
     <div class="colab-df-buttons">
       
   <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-9646b23b-9163-4fa7-93d5-053bc73af951')"
+    <button class="colab-df-convert" onclick="convertToInteractive('df-54055154-7825-49cb-a4fd-b76e74aa39e3')"
             title="Convert this dataframe to an interactive table."
             style="display:none;">
       
@@ -2261,12 +2265,12 @@ Name: Teks, dtype: object
 
     <script>
       const buttonEl =
-        document.querySelector('#df-9646b23b-9163-4fa7-93d5-053bc73af951 button.colab-df-convert');
+        document.querySelector('#df-54055154-7825-49cb-a4fd-b76e74aa39e3 button.colab-df-convert');
       buttonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
 
       async function convertToInteractive(key) {
-        const element = document.querySelector('#df-9646b23b-9163-4fa7-93d5-053bc73af951');
+        const element = document.querySelector('#df-54055154-7825-49cb-a4fd-b76e74aa39e3');
         const dataTable =
           await google.colab.kernel.invokeFunction('convertToInteractive',
                                                     [key], {});
@@ -2292,6 +2296,7 @@ Name: Teks, dtype: object
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="word2vec">
 <h1>Word2Vec<a class="headerlink" href="#word2vec" title="Permalink to this heading">#</a></h1>
+<hr class="docutils" />
 <p>digunakan untuk menghasilkan representasi vektor dari kata-kata dalam teks. Tujuannya adalah untuk memetakan kata-kata ke dalam ruang vektor sehingga kata-kata dengan makna atau konteks serupa akan memiliki representasi vektor yang mendekati satu sama lain.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2493,7 +2498,7 @@ Requirement already satisfied: smart-open&gt;=1.8.1 in /usr/local/lib/python3.10
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html">
-  <div id="df-448c6148-ea34-466f-ba93-b9c038338250" class="colab-df-container">
+  <div id="df-9403dd61-c9ef-490e-bb6b-f73bb61596cc" class="colab-df-container">
     <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -2663,7 +2668,7 @@ Requirement already satisfied: smart-open&gt;=1.8.1 in /usr/local/lib/python3.10
     <div class="colab-df-buttons">
       
   <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-448c6148-ea34-466f-ba93-b9c038338250')"
+    <button class="colab-df-convert" onclick="convertToInteractive('df-9403dd61-c9ef-490e-bb6b-f73bb61596cc')"
             title="Convert this dataframe to an interactive table."
             style="display:none;">
       
@@ -2715,12 +2720,12 @@ Requirement already satisfied: smart-open&gt;=1.8.1 in /usr/local/lib/python3.10
 
     <script>
       const buttonEl =
-        document.querySelector('#df-448c6148-ea34-466f-ba93-b9c038338250 button.colab-df-convert');
+        document.querySelector('#df-9403dd61-c9ef-490e-bb6b-f73bb61596cc button.colab-df-convert');
       buttonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
 
       async function convertToInteractive(key) {
-        const element = document.querySelector('#df-448c6148-ea34-466f-ba93-b9c038338250');
+        const element = document.querySelector('#df-9403dd61-c9ef-490e-bb6b-f73bb61596cc');
         const dataTable =
           await google.colab.kernel.invokeFunction('convertToInteractive',
                                                     [key], {});
@@ -2754,6 +2759,7 @@ Requirement already satisfied: smart-open&gt;=1.8.1 in /usr/local/lib/python3.10
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="pemodelan-topik">
 <h1>Pemodelan Topik<a class="headerlink" href="#pemodelan-topik" title="Permalink to this heading">#</a></h1>
+<hr class="docutils" />
 <p>untuk mengidentifikasi dan memahami topik-topik utama yang muncul dalam koleksi dokumen atau korpus teks. Teknik ini membantu menggambarkan struktur topik dari suatu dataset teks tanpa memerlukan anotasi manual atau pemahaman domain tertentu.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2816,7 +2822,7 @@ Requirement already satisfied: smart-open&gt;=1.8.1 in /usr/local/lib/python3.10
 </pre></div>
 </div>
 <div class="output text_html">
-  <div id="df-d1797e05-f0df-4834-8df1-12b328b3b351" class="colab-df-container">
+  <div id="df-601a8655-6900-4a23-9277-e33de5f74376" class="colab-df-container">
     <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -2865,7 +2871,7 @@ Requirement already satisfied: smart-open&gt;=1.8.1 in /usr/local/lib/python3.10
     <div class="colab-df-buttons">
       
   <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-d1797e05-f0df-4834-8df1-12b328b3b351')"
+    <button class="colab-df-convert" onclick="convertToInteractive('df-601a8655-6900-4a23-9277-e33de5f74376')"
             title="Convert this dataframe to an interactive table."
             style="display:none;">
       
@@ -2917,12 +2923,12 @@ Requirement already satisfied: smart-open&gt;=1.8.1 in /usr/local/lib/python3.10
 
     <script>
       const buttonEl =
-        document.querySelector('#df-d1797e05-f0df-4834-8df1-12b328b3b351 button.colab-df-convert');
+        document.querySelector('#df-601a8655-6900-4a23-9277-e33de5f74376 button.colab-df-convert');
       buttonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
 
       async function convertToInteractive(key) {
-        const element = document.querySelector('#df-d1797e05-f0df-4834-8df1-12b328b3b351');
+        const element = document.querySelector('#df-601a8655-6900-4a23-9277-e33de5f74376');
         const dataTable =
           await google.colab.kernel.invokeFunction('convertToInteractive',
                                                     [key], {});
@@ -2958,7 +2964,7 @@ Requirement already satisfied: smart-open&gt;=1.8.1 in /usr/local/lib/python3.10
 </pre></div>
 </div>
 <div class="output text_html">
-  <div id="df-2cc21726-2e11-4b10-8105-d381397ebaeb" class="colab-df-container">
+  <div id="df-521617fb-f8eb-4637-97d6-b54841c730f0" class="colab-df-container">
     <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -2991,7 +2997,7 @@ Requirement already satisfied: smart-open&gt;=1.8.1 in /usr/local/lib/python3.10
     <div class="colab-df-buttons">
       
   <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-2cc21726-2e11-4b10-8105-d381397ebaeb')"
+    <button class="colab-df-convert" onclick="convertToInteractive('df-521617fb-f8eb-4637-97d6-b54841c730f0')"
             title="Convert this dataframe to an interactive table."
             style="display:none;">
       
@@ -3043,12 +3049,12 @@ Requirement already satisfied: smart-open&gt;=1.8.1 in /usr/local/lib/python3.10
 
     <script>
       const buttonEl =
-        document.querySelector('#df-2cc21726-2e11-4b10-8105-d381397ebaeb button.colab-df-convert');
+        document.querySelector('#df-521617fb-f8eb-4637-97d6-b54841c730f0 button.colab-df-convert');
       buttonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
 
       async function convertToInteractive(key) {
-        const element = document.querySelector('#df-2cc21726-2e11-4b10-8105-d381397ebaeb');
+        const element = document.querySelector('#df-521617fb-f8eb-4637-97d6-b54841c730f0');
         const dataTable =
           await google.colab.kernel.invokeFunction('convertToInteractive',
                                                     [key], {});
@@ -3074,7 +3080,150 @@ Requirement already satisfied: smart-open&gt;=1.8.1 in /usr/local/lib/python3.10
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="klastering">
 <h1>Klastering<a class="headerlink" href="#klastering" title="Permalink to this heading">#</a></h1>
+<hr class="docutils" />
 <p>untuk mengidentifikasi dan memahami topik-topik utama yang muncul dalam koleksi dokumen atau korpus teks. Teknik ini membantu menggambarkan struktur topik dari suatu dataset teks tanpa memerlukan anotasi manual atau pemahaman domain tertentu.</p>
+<section id="ringkasan-dokumen">
+<h2>#Ringkasan Dokumen<a class="headerlink" href="#ringkasan-dokumen" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>sumy
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Collecting sumy
+  Downloading sumy-0.11.0-py2.py3-none-any.whl (97 kB)
+?25l     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">0.0/97.3 kB</span> <span class=" -Color -Color-Red">?</span> eta <span class=" -Color -Color-Cyan">-:--:--</span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">97.3/97.3 kB</span> <span class=" -Color -Color-Red">2.8 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
+?25hCollecting docopt&lt;0.7,&gt;=0.6.1 (from sumy)
+  Downloading docopt-0.6.2.tar.gz (25 kB)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Preparing metadata (setup.py) ... ?25l?25hdone
+Collecting breadability&gt;=0.1.20 (from sumy)
+  Downloading breadability-0.1.20.tar.gz (32 kB)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Preparing metadata (setup.py) ... ?25l?25hdone
+Requirement already satisfied: requests&gt;=2.7.0 in /usr/local/lib/python3.10/dist-packages (from sumy) (2.31.0)
+Collecting pycountry&gt;=18.2.23 (from sumy)
+  Downloading pycountry-22.3.5.tar.gz (10.1 MB)
+?25l     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">0.0/10.1 MB</span> <span class=" -Color -Color-Red">?</span> eta <span class=" -Color -Color-Cyan">-:--:--</span>
+     ━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">0.4/10.1 MB</span> <span class=" -Color -Color-Red">11.8 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+     ━━━╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">0.9/10.1 MB</span> <span class=" -Color -Color-Red">12.3 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+     ━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">1.4/10.1 MB</span> <span class=" -Color -Color-Red">13.3 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+     ━━━━━━━━╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">2.1/10.1 MB</span> <span class=" -Color -Color-Red">14.7 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+     ━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">3.0/10.1 MB</span> <span class=" -Color -Color-Red">16.3 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>     ━━━━━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">3.9/10.1 MB</span> <span class=" -Color -Color-Red">17.9 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+     ━━━━━━━━━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">5.0/10.1 MB</span> <span class=" -Color -Color-Red">19.8 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+     ━━━━━━━━━━━━━━━━━━━━━━━━╸━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">6.3/10.1 MB</span> <span class=" -Color -Color-Red">21.6 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸━━━━━━━━ <span class=" -Color -Color-Green">8.1/10.1 MB</span> <span class=" -Color -Color-Red">24.5 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸ <span class=" -Color -Color-Green">10.1/10.1 MB</span> <span class=" -Color -Color-Red">27.8 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸ <span class=" -Color -Color-Green">10.1/10.1 MB</span> <span class=" -Color -Color-Red">27.8 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:01</span>
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">10.1/10.1 MB</span> <span class=" -Color -Color-Red">23.7 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
+?25h
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Installing build dependencies ... ?25l?25hdone
+  Getting requirements to build wheel ... ?25l?25hdone
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Preparing metadata (pyproject.toml) ... ?25l?25hdone
+Requirement already satisfied: nltk&gt;=3.0.2 in /usr/local/lib/python3.10/dist-packages (from sumy) (3.8.1)
+Requirement already satisfied: chardet in /usr/local/lib/python3.10/dist-packages (from breadability&gt;=0.1.20-&gt;sumy) (5.2.0)
+Requirement already satisfied: lxml&gt;=2.0 in /usr/local/lib/python3.10/dist-packages (from breadability&gt;=0.1.20-&gt;sumy) (4.9.3)
+Requirement already satisfied: click in /usr/local/lib/python3.10/dist-packages (from nltk&gt;=3.0.2-&gt;sumy) (8.1.7)
+Requirement already satisfied: joblib in /usr/local/lib/python3.10/dist-packages (from nltk&gt;=3.0.2-&gt;sumy) (1.3.2)
+Requirement already satisfied: regex&gt;=2021.8.3 in /usr/local/lib/python3.10/dist-packages (from nltk&gt;=3.0.2-&gt;sumy) (2023.6.3)
+Requirement already satisfied: tqdm in /usr/local/lib/python3.10/dist-packages (from nltk&gt;=3.0.2-&gt;sumy) (4.66.1)
+Requirement already satisfied: setuptools in /usr/local/lib/python3.10/dist-packages (from pycountry&gt;=18.2.23-&gt;sumy) (67.7.2)
+Requirement already satisfied: charset-normalizer&lt;4,&gt;=2 in /usr/local/lib/python3.10/dist-packages (from requests&gt;=2.7.0-&gt;sumy) (3.3.2)
+Requirement already satisfied: idna&lt;4,&gt;=2.5 in /usr/local/lib/python3.10/dist-packages (from requests&gt;=2.7.0-&gt;sumy) (3.6)
+Requirement already satisfied: urllib3&lt;3,&gt;=1.21.1 in /usr/local/lib/python3.10/dist-packages (from requests&gt;=2.7.0-&gt;sumy) (2.0.7)
+Requirement already satisfied: certifi&gt;=2017.4.17 in /usr/local/lib/python3.10/dist-packages (from requests&gt;=2.7.0-&gt;sumy) (2023.11.17)
+Building wheels for collected packages: breadability, docopt, pycountry
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Building wheel for breadability (setup.py) ... ?25l?25hdone
+  Created wheel for breadability: filename=breadability-0.1.20-py2.py3-none-any.whl size=21691 sha256=af42e9eb968b1c67772842c1153444071f2b147803de979a243a1a8ed904667e
+  Stored in directory: /root/.cache/pip/wheels/64/22/90/b84fcc30e16598db20a0d41340616dbf9b1e82bbcc627b0b33
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Building wheel for docopt (setup.py) ... ?25l?25hdone
+  Created wheel for docopt: filename=docopt-0.6.2-py2.py3-none-any.whl size=13706 sha256=a6c0950ef42f31df224f5b9ac85a36aae7fa348ace1786517353b3d218c4196d
+  Stored in directory: /root/.cache/pip/wheels/fc/ab/d4/5da2067ac95b36618c629a5f93f809425700506f72c9732fac
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Building wheel for pycountry (pyproject.toml) ... ?25l?25hdone
+  Created wheel for pycountry: filename=pycountry-22.3.5-py2.py3-none-any.whl size=10681832 sha256=3ac1ed955444f882c882c9b244f743dc4046c2a1490408672ec7bc8e8455ef59
+  Stored in directory: /root/.cache/pip/wheels/03/57/cc/290c5252ec97a6d78d36479a3c5e5ecc76318afcb241ad9dbe
+Successfully built breadability docopt pycountry
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Installing collected packages: docopt, pycountry, breadability, sumy
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Successfully installed breadability-0.1.20 docopt-0.6.2 pycountry-22.3.5 sumy-0.11.0
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sumy.parsers.plaintext</span> <span class="kn">import</span> <span class="n">PlaintextParser</span>
+<span class="kn">from</span> <span class="nn">sumy.nlp.tokenizers</span> <span class="kn">import</span> <span class="n">Tokenizer</span>
+<span class="kn">from</span> <span class="nn">sumy.summarizers.lsa</span> <span class="kn">import</span> <span class="n">LsaSummarizer</span>
+
+<span class="c1"># Inisialisasi list untuk menyimpan ringkasan dari setiap dokumen</span>
+<span class="n">ringkasan_dokumen</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">dokumen</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Abstrak&#39;</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">dokumen</span><span class="p">:</span>
+    <span class="c1"># Inisialisasi parser untuk dokumen</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">PlaintextParser</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">Tokenizer</span><span class="p">(</span><span class="s2">&quot;english&quot;</span><span class="p">))</span>
+
+    <span class="c1"># Inisialisasi ekstraktor ringkasan dengan metode LSA</span>
+    <span class="n">summarizer</span> <span class="o">=</span> <span class="n">LsaSummarizer</span><span class="p">()</span>
+
+    <span class="c1"># Dapatkan ringkasan dengan jumlah kalimat yang diinginkan (contoh: 3)</span>
+    <span class="n">ringkasan</span> <span class="o">=</span> <span class="n">summarizer</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">document</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+    <span class="c1"># Ubah ringkasan menjadi string</span>
+    <span class="n">ringkasan</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">ringkasan</span><span class="p">)</span>
+
+    <span class="c1"># Tambahkan ringkasan ke dalam list</span>
+    <span class="n">ringkasan_dokumen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ringkasan</span><span class="p">)</span>
+
+<span class="c1"># Tampilkan ringkasan dari semua dokumen</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ringkasan</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ringkasan_dokumen</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ringkasan Dokumen </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="si">{</span><span class="n">ringkasan</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ringkasan Dokumen 1:
+Di Universitas Trunojoyo telah tersedia SIAKAD,  namun  masih  menggunakan  database  terpusat. Sistem seperti ini memberikan kelebihan yaitu perawatannya mudah  selain  itu  juga  membutuhkan  sedikit  biaya,  namun sistem  tersebut  juga  berpotensi  mengahadapi  kendala-kendala  yaitu  dalam  proses  transaksi  data  karena  padatnya jaringan yang menuju database SIAKAD, kelambatan dalam pemrosesan  respon  query  dikarenakan  data  yang  tersimpan semakin besar dan pemrosesan semakin kompleks, dan  juga memiliki kelemahan dalam hal ketersediaan data. Karena dalam basisdata terdistribusi terdapat keuntungan yang tidak dimiliki oleh basisdata  terpusat yaitu pengawasan distribusi, reability,  availability,  kecepatan  dalam  pemrosesan  query dan otonomi local
+
+Ringkasan Dokumen 2:
+Berjalannya koneksi jaringan komputer dengan lancar dan tanpa gangguan merupakan harapan seluruh penggunanya, terutama pihak yang bertanggung jawab pada bidang itu, yakni administrator jaringan. Namun tidak selamanya koneksi jaringan dapat berjalan dengan lancar tanpa adanya gangguan. Oleh karena itu untuk menjaga bahkan meningkatkan kualitas layanan koneksi jaringan maka diperlukan adanya akses kontrol dan monitoring pada level administrator jaringan secara real-time berbasis mobile, yang dapat mengatur dan mengetahui informasi tentang koneksi jaringan dan dapat diakses setiap saat.
+
+Ringkasan Dokumen 3:
+Kemudian aplikasi ini akan menerima respon dari server dan melakukan proses enkripsi pada dokumen HTML terlebih dahulu. Web client disini bisa berupa aplikasi seperti Internet Explorer, Mozilla Firefox, atau Opera. Ketika web browser menerima dokumen HTML yang terenkripsi dari aplikasi proxy server, maka JavaScript Engine yang ada di web browser akan melakukan proses dekripsi sekaligus rendering sehingga dokumen akan ditampilkan sesuai dengan aslinya.
+
+Ringkasan Dokumen 4:
+Karena  itu  dibutuhkan  metode  optimasi  yang  dapat diterapkan  untuk  mengerjakan  penjadwalan  mata  kuliah  ini. Metode yang  dapat  digunakan  untuk  menyelesaikan  permasalahan  tersebut adalah  dengan  menggunakan  Algoritma  Genetika. Semoga  adanya  aplikasi ini  diharapkan  bisa  mempermudah  didalam  pembuatan  penjadwalan matakuliah dengan mudah dan cepat.
+
+Ringkasan Dokumen 5:
+Seiring berjalannya waktu, augmented reality berkembang pesat sehingga memungkinkan pengembangan aplikasi ini di berbagai bidang. Untuk mengembangkan AR banyak sekali library pendukung yang dapat digunakan. Berdasarkan sistem AR animasi benda bergerak yang dibuat adalah animasi bergerak permainan pingpong dimana telah dikolaborasikan dengan augmented reality untuk menggerakkan setiap langkah dari playernya.
+</pre></div>
+</div>
+</div>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.cluster</span> <span class="kn">import</span> <span class="n">KMeans</span>
@@ -3112,7 +3261,7 @@ Requirement already satisfied: smart-open&gt;=1.8.1 in /usr/local/lib/python3.10
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html">
-  <div id="df-90a8a62d-4f47-4e19-8bfb-dc52646d53c9" class="colab-df-container">
+  <div id="df-f665424c-a4d2-4899-aa8f-96fb20f362e3" class="colab-df-container">
     <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -3167,7 +3316,7 @@ Requirement already satisfied: smart-open&gt;=1.8.1 in /usr/local/lib/python3.10
     <div class="colab-df-buttons">
       
   <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-90a8a62d-4f47-4e19-8bfb-dc52646d53c9')"
+    <button class="colab-df-convert" onclick="convertToInteractive('df-f665424c-a4d2-4899-aa8f-96fb20f362e3')"
             title="Convert this dataframe to an interactive table."
             style="display:none;">
       
@@ -3219,12 +3368,12 @@ Requirement already satisfied: smart-open&gt;=1.8.1 in /usr/local/lib/python3.10
 
     <script>
       const buttonEl =
-        document.querySelector('#df-90a8a62d-4f47-4e19-8bfb-dc52646d53c9 button.colab-df-convert');
+        document.querySelector('#df-f665424c-a4d2-4899-aa8f-96fb20f362e3 button.colab-df-convert');
       buttonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
 
       async function convertToInteractive(key) {
-        const element = document.querySelector('#df-90a8a62d-4f47-4e19-8bfb-dc52646d53c9');
+        const element = document.querySelector('#df-f665424c-a4d2-4899-aa8f-96fb20f362e3');
         const dataTable =
           await google.colab.kernel.invokeFunction('convertToInteractive',
                                                     [key], {});
@@ -3265,6 +3414,7 @@ Requirement already satisfied: smart-open&gt;=1.8.1 in /usr/local/lib/python3.10
 </div>
 </div>
 </div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -3332,10 +3482,17 @@ Requirement already satisfied: smart-open&gt;=1.8.1 in /usr/local/lib/python3.10
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Crawling Berita PTA</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#preprocessing">Preprocessing</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#casefolding">CaseFolding</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tokenisasi"><strong>Tokenisasi</strong></a></li>
+</ul>
+</li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-extraction">Feature Extraction</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#word2vec">Word2Vec</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#pemodelan-topik">Pemodelan Topik</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#klastering">Klastering</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#klastering">Klastering</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ringkasan-dokumen">#Ringkasan Dokumen</a></li>
+</ul>
+</li>
 </ul>
 
   </nav></div>
