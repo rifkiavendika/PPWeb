@@ -571,60 +571,65 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
 <span class="g g-Whitespace">    </span><span class="mi">793</span><span class="s2">                 method,</span>
 
 <span class="nn">/usr/local/lib/python3.10/dist-packages/urllib3/connectionpool.py</span> in <span class="ni">_make_request</span><span class="nt">(self, conn, method, url, body, headers, retries, timeout, chunked, response_conn, preload_content, decode_content, enforce_content_length)</span>
-<span class="g g-Whitespace">    </span><span class="mi">535</span><span class="s2">         # Receive the response from the server</span>
-<span class="g g-Whitespace">    </span><span class="mi">536</span><span class="s2">         try:</span>
-<span class="ne">--&gt; </span><span class="mi">537</span><span class="s2">             response = conn.getresponse()</span>
-<span class="g g-Whitespace">    </span><span class="mi">538</span><span class="s2">         except (BaseSSLError, OSError) as e:</span>
-<span class="g g-Whitespace">    </span><span class="mi">539</span><span class="s2">             self._raise_timeout(err=e, url=url, timeout_value=read_timeout)</span>
+<span class="g g-Whitespace">    </span><span class="mi">466</span><span class="s2">             # Trigger any extra validation we need to do.</span>
+<span class="g g-Whitespace">    </span><span class="mi">467</span><span class="s2">             try:</span>
+<span class="ne">--&gt; </span><span class="mi">468</span><span class="s2">                 self._validate_conn(conn)</span>
+<span class="g g-Whitespace">    </span><span class="mi">469</span><span class="s2">             except (SocketTimeout, BaseSSLError) as e:</span>
+<span class="g g-Whitespace">    </span><span class="mi">470</span><span class="s2">                 self._raise_timeout(err=e, url=url, timeout_value=conn.timeout)</span>
 
-<span class="nn">/usr/local/lib/python3.10/dist-packages/urllib3/connection.py</span> in <span class="ni">getresponse</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">459</span><span class="s2"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">460</span><span class="s2">         # Get the response from http.client.HTTPConnection</span>
-<span class="ne">--&gt; </span><span class="mi">461</span><span class="s2">         httplib_response = super().getresponse()</span>
-<span class="g g-Whitespace">    </span><span class="mi">462</span><span class="s2"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">463</span><span class="s2">         try:</span>
+<span class="nn">/usr/local/lib/python3.10/dist-packages/urllib3/connectionpool.py</span> in <span class="ni">_validate_conn</span><span class="nt">(self, conn)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1095</span><span class="s2">         # Force connect early to allow us to validate the connection.</span>
+<span class="g g-Whitespace">   </span><span class="mi">1096</span><span class="s2">         if conn.is_closed:</span>
+<span class="ne">-&gt; </span><span class="mi">1097</span><span class="s2">             conn.connect()</span>
+<span class="g g-Whitespace">   </span><span class="mi">1098</span><span class="s2"> </span>
+<span class="g g-Whitespace">   </span><span class="mi">1099</span><span class="s2">         if not conn.is_verified:</span>
 
-<span class="nn">/usr/lib/python3.10/http/client.py</span> in <span class="ni">getresponse</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1373</span><span class="s2">         try:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1374</span><span class="s2">             try:</span>
-<span class="ne">-&gt; </span><span class="mi">1375</span><span class="s2">                 response.begin()</span>
-<span class="g g-Whitespace">   </span><span class="mi">1376</span><span class="s2">             except ConnectionError:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1377</span><span class="s2">                 self.close()</span>
+<span class="nn">/usr/local/lib/python3.10/dist-packages/urllib3/connection.py</span> in <span class="ni">connect</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">640</span><span class="s2">             )</span>
+<span class="g g-Whitespace">    </span><span class="mi">641</span><span class="s2"> </span>
+<span class="ne">--&gt; </span><span class="mi">642</span><span class="s2">         sock_and_verified = _ssl_wrap_socket_and_match_hostname(</span>
+<span class="g g-Whitespace">    </span><span class="mi">643</span><span class="s2">             sock=sock,</span>
+<span class="g g-Whitespace">    </span><span class="mi">644</span><span class="s2">             cert_reqs=self.cert_reqs,</span>
 
-<span class="nn">/usr/lib/python3.10/http/client.py</span> in <span class="ni">begin</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">316</span><span class="s2">         # read until we get a non-100 response</span>
-<span class="g g-Whitespace">    </span><span class="mi">317</span><span class="s2">         while True:</span>
-<span class="ne">--&gt; </span><span class="mi">318</span><span class="s2">             version, status, reason = self._read_status()</span>
-<span class="g g-Whitespace">    </span><span class="mi">319</span><span class="s2">             if status != CONTINUE:</span>
-<span class="g g-Whitespace">    </span><span class="mi">320</span><span class="s2">                 break</span>
+<span class="nn">/usr/local/lib/python3.10/dist-packages/urllib3/connection.py</span> in <span class="ni">_ssl_wrap_socket_and_match_hostname</span><span class="nt">(sock, cert_reqs, ssl_version, ssl_minimum_version, ssl_maximum_version, cert_file, key_file, key_password, ca_certs, ca_cert_dir, ca_cert_data, assert_hostname, assert_fingerprint, server_hostname, ssl_context, tls_in_tls)</span>
+<span class="g g-Whitespace">    </span><span class="mi">781</span><span class="s2">             server_hostname = normalized</span>
+<span class="g g-Whitespace">    </span><span class="mi">782</span><span class="s2"> </span>
+<span class="ne">--&gt; </span><span class="mi">783</span><span class="s2">     ssl_sock = ssl_wrap_socket(</span>
+<span class="g g-Whitespace">    </span><span class="mi">784</span><span class="s2">         sock=sock,</span>
+<span class="g g-Whitespace">    </span><span class="mi">785</span><span class="s2">         keyfile=key_file,</span>
 
-<span class="nn">/usr/lib/python3.10/http/client.py</span> in <span class="ni">_read_status</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">277</span><span class="s2"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">278</span><span class="s2">     def _read_status(self):</span>
-<span class="ne">--&gt; </span><span class="mi">279</span><span class="s2">         line = str(self.fp.readline(_MAXLINE + 1), &quot;iso-8859-1&quot;)</span>
-<span class="g g-Whitespace">    </span><span class="mi">280</span><span class="s2">         if len(line) &gt; _MAXLINE:</span>
-<span class="g g-Whitespace">    </span><span class="mi">281</span><span class="s2">             raise LineTooLong(&quot;status line&quot;)</span>
+<span class="nn">/usr/local/lib/python3.10/dist-packages/urllib3/util/ssl_.py</span> in <span class="ni">ssl_wrap_socket</span><span class="nt">(sock, keyfile, certfile, cert_reqs, ca_certs, server_hostname, ssl_version, ciphers, ssl_context, ca_cert_dir, key_password, ca_cert_data, tls_in_tls)</span>
+<span class="g g-Whitespace">    </span><span class="mi">469</span><span class="s2">         pass</span>
+<span class="g g-Whitespace">    </span><span class="mi">470</span><span class="s2"> </span>
+<span class="ne">--&gt; </span><span class="mi">471</span><span class="s2">     ssl_sock = _ssl_wrap_socket_impl(sock, context, tls_in_tls, server_hostname)</span>
+<span class="g g-Whitespace">    </span><span class="mi">472</span><span class="s2">     return ssl_sock</span>
+<span class="g g-Whitespace">    </span><span class="mi">473</span><span class="s2"> </span>
 
-<span class="nn">/usr/lib/python3.10/socket.py</span> in <span class="ni">readinto</span><span class="nt">(self, b)</span>
-<span class="g g-Whitespace">    </span><span class="mi">703</span><span class="s2">         while True:</span>
-<span class="g g-Whitespace">    </span><span class="mi">704</span><span class="s2">             try:</span>
-<span class="ne">--&gt; </span><span class="mi">705</span><span class="s2">                 return self._sock.recv_into(b)</span>
-<span class="g g-Whitespace">    </span><span class="mi">706</span><span class="s2">             except timeout:</span>
-<span class="g g-Whitespace">    </span><span class="mi">707</span><span class="s2">                 self._timeout_occurred = True</span>
+<span class="nn">/usr/local/lib/python3.10/dist-packages/urllib3/util/ssl_.py</span> in <span class="ni">_ssl_wrap_socket_impl</span><span class="nt">(sock, ssl_context, tls_in_tls, server_hostname)</span>
+<span class="g g-Whitespace">    </span><span class="mi">513</span><span class="s2">         return SSLTransport(sock, ssl_context, server_hostname)</span>
+<span class="g g-Whitespace">    </span><span class="mi">514</span><span class="s2"> </span>
+<span class="ne">--&gt; </span><span class="mi">515</span><span class="s2">     return ssl_context.wrap_socket(sock, server_hostname=server_hostname)</span>
 
-<span class="nn">/usr/lib/python3.10/ssl.py</span> in <span class="ni">recv_into</span><span class="nt">(self, buffer, nbytes, flags)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1301</span><span class="s2">                   &quot;non-zero flags not allowed in calls to recv_into() on </span><span class="si">%s</span><span class="s2">&quot; %</span>
-<span class="g g-Whitespace">   </span><span class="mi">1302</span><span class="s2">                   self.__class__)</span>
-<span class="ne">-&gt; </span><span class="mi">1303</span><span class="s2">             return self.read(nbytes, buffer)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1304</span><span class="s2">         else:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1305</span><span class="s2">             return super().recv_into(buffer, nbytes, flags)</span>
+<span class="nn">/usr/lib/python3.10/ssl.py</span> in <span class="ni">wrap_socket</span><span class="nt">(self, sock, server_side, do_handshake_on_connect, suppress_ragged_eofs, server_hostname, session)</span>
+<span class="g g-Whitespace">    </span><span class="mi">511</span><span class="s2">         # SSLSocket class handles server_hostname encoding before it calls</span>
+<span class="g g-Whitespace">    </span><span class="mi">512</span><span class="s2">         # ctx._wrap_socket()</span>
+<span class="ne">--&gt; </span><span class="mi">513</span><span class="s2">         return self.sslsocket_class._create(</span>
+<span class="g g-Whitespace">    </span><span class="mi">514</span><span class="s2">             sock=sock,</span>
+<span class="g g-Whitespace">    </span><span class="mi">515</span><span class="s2">             server_side=server_side,</span>
 
-<span class="nn">/usr/lib/python3.10/ssl.py</span> in <span class="ni">read</span><span class="nt">(self, len, buffer)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1157</span><span class="s2">         try:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1158</span><span class="s2">             if buffer is not None:</span>
-<span class="ne">-&gt; </span><span class="mi">1159</span><span class="s2">                 return self._sslobj.read(len, buffer)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1160</span><span class="s2">             else:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1161</span><span class="s2">                 return self._sslobj.read(len)</span>
+<span class="nn">/usr/lib/python3.10/ssl.py</span> in <span class="ni">_create</span><span class="nt">(cls, sock, server_side, do_handshake_on_connect, suppress_ragged_eofs, server_hostname, context, session)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1098</span><span class="s2">                         # non-blocking</span>
+<span class="g g-Whitespace">   </span><span class="mi">1099</span><span class="s2">                         raise ValueError(&quot;do_handshake_on_connect should not be specified for non-blocking sockets&quot;)</span>
+<span class="ne">-&gt; </span><span class="mi">1100</span><span class="s2">                     self.do_handshake()</span>
+<span class="g g-Whitespace">   </span><span class="mi">1101</span><span class="s2">             except (OSError, ValueError):</span>
+<span class="g g-Whitespace">   </span><span class="mi">1102</span><span class="s2">                 self.close()</span>
+
+<span class="nn">/usr/lib/python3.10/ssl.py</span> in <span class="ni">do_handshake</span><span class="nt">(self, block)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1369</span><span class="s2">             if timeout == 0.0 and block:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1370</span><span class="s2">                 self.settimeout(None)</span>
+<span class="ne">-&gt; </span><span class="mi">1371</span><span class="s2">             self._sslobj.do_handshake()</span>
+<span class="g g-Whitespace">   </span><span class="mi">1372</span><span class="s2">         finally:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1373</span><span class="s2">             self.settimeout(timeout)</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
@@ -639,7 +644,7 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html">
-  <div id="df-ca378cda-f560-4bcb-9a6b-c6e6a3c2fc25" class="colab-df-container">
+  <div id="df-7e7302eb-6161-410c-a551-f1f1078d0e63" class="colab-df-container">
     <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -665,103 +670,103 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
   <tbody>
     <tr>
       <th>0</th>
-      <td>Polres Jakpus Terima Laporan Penipuan Modus Ju...</td>
-      <td>Jakarta - Polres Metro Jakarta Pusat (Jakpus) ...</td>
+      <td>COVID-19 Naik di ASEAN, Bandara Soetta Bakal A...</td>
+      <td>Jakarta - Pandemi COVID-19 sudah berlalu tapi ...</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>Ada Konser Coldplay, Lalin Bundaran HI Arah GB...</td>
-      <td>Jakarta - Lalu lintas (lalin) dari Bundaran Ho...</td>
+      <td>Kebakaran Rumah di Jaktim, 1 Warga Tewas Akiba...</td>
+      <td>Jakarta - Satu unit rumah di Rawamangun, Jakar...</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>Demo Tolak Coldplay di GBK Ricuh!</td>
-      <td>Massa mengatasnamakan Geranati LGBT menggelar ...</td>
+      <td>Prasetyo Edi Apresiasi Langkah Pemprov DKI Res...</td>
+      <td>Jakarta - Setelah tiga tahun menanti keseriusa...</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>Desa Berdaya Perangi Sampah Jogja</td>
-      <td></td>
+      <td>Panca Ngaku Menyesal Usai Membunuh dan Ingin M...</td>
+      <td>Jakarta -  Panca Darmansyah alias Panca (41) m...</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>Masriah Kembali Mangkir Sidang Kasus Buang Sam...</td>
-      <td>Jakarta - Masriah kembali mangkir di sidang ka...</td>
+      <td>DPRD Surabaya Apresiasi Pemkot Revitalisasi Ka...</td>
+      <td>Jakarta - Wakil Ketua DPRD Kota Surabaya AH Th...</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>China Dituduh Jadi Dalang Peretasan yang Diala...</td>
-      <td>Jakarta - Semakin banyak warga Australia melap...</td>
+      <td>Prabowo-Gibran Teratas di Survei LSI Denny JA</td>
+      <td>Jakarta - Lembaga survei LSI Denny JA merilis ...</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>MUI: Daftar Produk untuk Diboikot yang Beredar...</td>
-      <td>Jakarta -  Majelis Ulama Indonesia (MUI) tidak...</td>
+      <td>Kasus Covid Meningkat Lagi, Wamenkes Sebut Mas...</td>
+      <td>Jakarta - Wabah Covid-19 kini tengah meningkat...</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>Israel Klaim Gelar 'Operasi Tepat Sasaran' Mem...</td>
-      <td>Jakarta - Militer Pasukan Pertahanan Israel, I...</td>
+      <td>Tilang Manual Sementara Tak Berlaku saat Libur...</td>
+      <td>Jakarta -  Tilang manual sementara tidak diber...</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>6 Tempat Parkir Konser Coldplay di Jakarta, Ce...</td>
-      <td>Jakarta - Kawasan Gelora Bung Karno (GBK) ditu...</td>
+      <td>Satpol PP DKI Tutup Klub Malam KODE Jakarta Bu...</td>
+      <td>Jakarta - Satpol PP Provinsi DKI Jakarta menut...</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>Hilang 10 Hari, Mahasiswa UPN Yogya Ditemukan ...</td>
-      <td>Jakarta - Annisa Dewi Kartika Sari (18), mahas...</td>
+      <td>Ada Luka Punggung-Leher Wanita Tewas di Kolong...</td>
+      <td>Bogor - Kasat Reskrim Polresta Bogor Kota Komp...</td>
     </tr>
     <tr>
       <th>10</th>
-      <td>Trimedya PDIP Usul Pembentukan Panja Netralita...</td>
-      <td>Jakarta - Usulan pembentukan panitia kerja (Pa...</td>
+      <td>Polisi: Wanita Jepang Diduga Bunuh Diri di Hot...</td>
+      <td>Jakarta - Informasi berikut ini tidak ditujuka...</td>
     </tr>
     <tr>
       <th>11</th>
-      <td>Polda Metro Jelaskan soal Brimob Diviralkan Da...</td>
-      <td>Jakarta - Postingan yang disertai narasi sejum...</td>
+      <td>Jubir AMIN soal Netralitas TNI-Polri di Pemilu...</td>
+      <td>Jakarta - Juru Bicara Timnas Anies-Muhaimin (A...</td>
     </tr>
     <tr>
       <th>12</th>
-      <td>Arahan Kapolri, Polres Bogor Tanam 10 Ribu Poh...</td>
-      <td>Bogor - Polres Bogor beserta jajaran menanam 1...</td>
+      <td>Airin: Doa Para Ulama Banten Mengiringi Prabow...</td>
+      <td>Jakarta - Tim Kampanye Daerah (TKD) Koalisi In...</td>
     </tr>
     <tr>
       <th>13</th>
-      <td>Momen Prabowo Pimpin Pertemuan Menhan Se-ASEAN</td>
-      <td>Jakarta - Menhan Prabowo Subianto memimpin The...</td>
+      <td>Intip Persiapan Panggung Debat Capres Pemilu 2024</td>
+      <td>Debat capres perdana akan digelar di kantor KP...</td>
     </tr>
     <tr>
       <th>14</th>
-      <td>Kapolda Metro Jaya Pantau Langsung Demo Tolak ...</td>
-      <td>Jakarta - Kapolda Metro Jaya Irjen Karyoto men...</td>
+      <td>Survei ASI: Elektabilitas PPP 4,2% Diprediksi ...</td>
+      <td>Jakarta - Hasil survei dari Arus Survei Indone...</td>
     </tr>
     <tr>
       <th>15</th>
-      <td>Gugatan Pailit terhadap Pemilik Bank Capital M...</td>
-      <td>Jakarta - Sidang gugatan pailit terhadap Danny...</td>
+      <td>Ini Rencana Pengalihan Lalin Seputar KPU RI Ja...</td>
+      <td>Jakarta - Polda Metro Jaya bakal melakukan rek...</td>
     </tr>
     <tr>
       <th>16</th>
-      <td>Panas! Houthi Ancam Serang Kapal Israel di Lau...</td>
-      <td>Sanaa -  Kelompok pemberontak Houthi yang berm...</td>
+      <td>Bamsoet Sebut 3 Waketum Pemuda Pancasila Ada d...</td>
+      <td>Jakarta - Wakil Ketua Umum Partai Golkar Bamba...</td>
     </tr>
     <tr>
       <th>17</th>
-      <td>Ragam Sanksi untuk Eric Hiariej Sebelum Dipeca...</td>
-      <td>Jakarta - Universitas Gadjah Mada (UGM) memeca...</td>
+      <td>Ganjar Nilai Waktu Debat Capres Tak Bisa Akomo...</td>
+      <td>Jakarta - Calon presiden nomor urut 3 Ganjar P...</td>
     </tr>
     <tr>
       <th>18</th>
-      <td>Imbas Demo Tolak Coldplay, Lalin Sekitar GBK M...</td>
-      <td>Jakarta - Massa dari Geranati LGBT menggelar a...</td>
+      <td>Wanita Ditemukan Tewas di Kolong Tempat Tidur ...</td>
+      <td>Bogor - Seorang wanita ditemukan tewas di dala...</td>
     </tr>
     <tr>
       <th>19</th>
-      <td>Suami Bakar Eks Dirut RSUD Sidimpuan gegara Ta...</td>
-      <td>Batam - Motif pembunuhan eks Direktur RSUD Pad...</td>
+      <td>Dalih Panca Tidurkan 4 Anak Padahal Secara Kej...</td>
+      <td>Jakarta - Panca Darmahsyah alias Panca (41) te...</td>
     </tr>
   </tbody>
 </table>
@@ -769,7 +774,7 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
     <div class="colab-df-buttons">
 
   <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-ca378cda-f560-4bcb-9a6b-c6e6a3c2fc25')"
+    <button class="colab-df-convert" onclick="convertToInteractive('df-7e7302eb-6161-410c-a551-f1f1078d0e63')"
             title="Convert this dataframe to an interactive table."
             style="display:none;">
 
@@ -821,12 +826,12 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
 
     <script>
       const buttonEl =
-        document.querySelector('#df-ca378cda-f560-4bcb-9a6b-c6e6a3c2fc25 button.colab-df-convert');
+        document.querySelector('#df-7e7302eb-6161-410c-a551-f1f1078d0e63 button.colab-df-convert');
       buttonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
 
       async function convertToInteractive(key) {
-        const element = document.querySelector('#df-ca378cda-f560-4bcb-9a6b-c6e6a3c2fc25');
+        const element = document.querySelector('#df-7e7302eb-6161-410c-a551-f1f1078d0e63');
         const dataTable =
           await google.colab.kernel.invokeFunction('convertToInteractive',
                                                     [key], {});
@@ -846,8 +851,8 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
   </div>
 
 
-<div id="df-2ee4bc7a-87b7-4649-88c3-b812e5e3112c">
-  <button class="colab-df-quickchart" onclick="quickchart('df-2ee4bc7a-87b7-4649-88c3-b812e5e3112c')"
+<div id="df-b4b3d126-d58d-4abd-aa49-4a54b3fa7c88">
+  <button class="colab-df-quickchart" onclick="quickchart('df-b4b3d126-d58d-4abd-aa49-4a54b3fa7c88')"
             title="Suggest charts"
             style="display:none;">
 
@@ -966,7 +971,7 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
     }
     (() => {
       let quickchartButtonEl =
-        document.querySelector('#df-2ee4bc7a-87b7-4649-88c3-b812e5e3112c button');
+        document.querySelector('#df-b4b3d126-d58d-4abd-aa49-4a54b3fa7c88 button');
       quickchartButtonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
     })();
@@ -1019,7 +1024,7 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html">
-  <div id="df-732274df-948f-47ba-9f19-b51b33f827fc" class="colab-df-container">
+  <div id="df-aa4e25a6-ce10-4ba2-a952-3e85b13c2386" class="colab-df-container">
     <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -1038,77 +1043,77 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>10</th>
+      <th>02</th>
+      <th>06</th>
+      <th>07</th>
+      <th>107</th>
       <th>11</th>
+      <th>12</th>
+      <th>131</th>
       <th>15</th>
-      <th>2013</th>
-      <th>2023</th>
-      <th>50</th>
-      <th>ada</th>
-      <th>advertisement</th>
-      <th>agar</th>
-      <th>air</th>
+      <th>19</th>
+      <th>1966</th>
       <th>...</th>
-      <th>untuk</th>
-      <th>viral</th>
-      <th>volume</th>
-      <th>wanita</th>
-      <th>warga</th>
-      <th>winarti</th>
+      <th>wisata</th>
       <th>with</th>
-      <th>wiwik</th>
-      <th>wnv</th>
+      <th>xbb</th>
+      <th>ya</th>
+      <th>yaitu</th>
+      <th>yakin</th>
+      <th>yakni</th>
       <th>yang</th>
+      <th>yossi</th>
+      <th>zona</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
       <td>0.000000</td>
-      <td>0.044183</td>
-      <td>0.044183</td>
+      <td>0.034964</td>
       <td>0.000000</td>
-      <td>0.044183</td>
+      <td>0.034964</td>
+      <td>0.016661</td>
+      <td>0.016661</td>
+      <td>0.034964</td>
       <td>0.000000</td>
-      <td>0.065973</td>
-      <td>0.044183</td>
-      <td>0.000000</td>
+      <td>0.279713</td>
       <td>0.000000</td>
       <td>...</td>
       <td>0.000000</td>
-      <td>0.065973</td>
-      <td>0.00000</td>
-      <td>0.065973</td>
-      <td>0.00000</td>
+      <td>0.016661</td>
+      <td>0.034964</td>
       <td>0.000000</td>
-      <td>0.044183</td>
+      <td>0.034964</td>
       <td>0.000000</td>
-      <td>0.065973</td>
-      <td>0.088366</td>
+      <td>0.00000</td>
+      <td>0.116624</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>0.039388</td>
-      <td>0.032695</td>
-      <td>0.032695</td>
+      <td>0.046044</td>
       <td>0.000000</td>
-      <td>0.032695</td>
+      <td>0.046044</td>
       <td>0.000000</td>
+      <td>0.021940</td>
+      <td>0.043881</td>
       <td>0.000000</td>
-      <td>0.032695</td>
+      <td>0.111445</td>
       <td>0.000000</td>
       <td>0.000000</td>
       <td>...</td>
       <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.04882</td>
-      <td>0.000000</td>
-      <td>0.04882</td>
-      <td>0.000000</td>
-      <td>0.032695</td>
+      <td>0.021940</td>
       <td>0.000000</td>
       <td>0.000000</td>
-      <td>0.032695</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.00000</td>
+      <td>0.109702</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
     </tr>
     <tr>
       <th>2</th>
@@ -1116,21 +1121,21 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
       <td>0.000000</td>
       <td>0.000000</td>
       <td>0.000000</td>
+      <td>0.016710</td>
+      <td>0.016710</td>
       <td>0.000000</td>
       <td>0.000000</td>
       <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
+      <td>0.035067</td>
       <td>...</td>
       <td>0.000000</td>
+      <td>0.016710</td>
+      <td>0.000000</td>
+      <td>0.084875</td>
+      <td>0.000000</td>
       <td>0.000000</td>
       <td>0.00000</td>
-      <td>0.000000</td>
-      <td>0.00000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
+      <td>0.016710</td>
       <td>0.000000</td>
       <td>0.000000</td>
     </tr>
@@ -1140,56 +1145,56 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
       <td>0.000000</td>
       <td>0.000000</td>
       <td>0.000000</td>
+      <td>0.034208</td>
+      <td>0.034208</td>
       <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
+      <td>0.028959</td>
       <td>0.000000</td>
       <td>0.000000</td>
       <td>...</td>
       <td>0.000000</td>
+      <td>0.017104</td>
       <td>0.000000</td>
+      <td>0.086878</td>
+      <td>0.000000</td>
+      <td>0.035894</td>
       <td>0.00000</td>
-      <td>0.000000</td>
-      <td>0.00000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
+      <td>0.171038</td>
+      <td>0.071789</td>
       <td>0.000000</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>0.034711</td>
-      <td>0.086440</td>
-      <td>0.057627</td>
-      <td>0.043024</td>
-      <td>0.057627</td>
-      <td>0.043024</td>
       <td>0.000000</td>
-      <td>0.028813</td>
-      <td>0.043024</td>
-      <td>0.043024</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.011589</td>
+      <td>0.011589</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
       <td>...</td>
-      <td>0.043024</td>
+      <td>0.072961</td>
+      <td>0.011589</td>
       <td>0.000000</td>
-      <td>0.00000</td>
       <td>0.000000</td>
-      <td>0.00000</td>
-      <td>0.086047</td>
-      <td>0.028813</td>
-      <td>0.215118</td>
       <td>0.000000</td>
-      <td>0.028813</td>
+      <td>0.000000</td>
+      <td>0.04864</td>
+      <td>0.069532</td>
+      <td>0.000000</td>
+      <td>0.121601</td>
     </tr>
   </tbody>
 </table>
-<p>5 rows × 301 columns</p>
+<p>5 rows × 715 columns</p>
 </div>
     <div class="colab-df-buttons">
 
   <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-732274df-948f-47ba-9f19-b51b33f827fc')"
+    <button class="colab-df-convert" onclick="convertToInteractive('df-aa4e25a6-ce10-4ba2-a952-3e85b13c2386')"
             title="Convert this dataframe to an interactive table."
             style="display:none;">
 
@@ -1241,12 +1246,12 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
 
     <script>
       const buttonEl =
-        document.querySelector('#df-732274df-948f-47ba-9f19-b51b33f827fc button.colab-df-convert');
+        document.querySelector('#df-aa4e25a6-ce10-4ba2-a952-3e85b13c2386 button.colab-df-convert');
       buttonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
 
       async function convertToInteractive(key) {
-        const element = document.querySelector('#df-732274df-948f-47ba-9f19-b51b33f827fc');
+        const element = document.querySelector('#df-aa4e25a6-ce10-4ba2-a952-3e85b13c2386');
         const dataTable =
           await google.colab.kernel.invokeFunction('convertToInteractive',
                                                     [key], {});
@@ -1266,8 +1271,8 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
   </div>
 
 
-<div id="df-0efaf535-de70-4ea5-9743-46e50bf2bbcd">
-  <button class="colab-df-quickchart" onclick="quickchart('df-0efaf535-de70-4ea5-9743-46e50bf2bbcd')"
+<div id="df-5182f7cd-8297-4d20-9231-ca9c68f80d4c">
+  <button class="colab-df-quickchart" onclick="quickchart('df-5182f7cd-8297-4d20-9231-ca9c68f80d4c')"
             title="Suggest charts"
             style="display:none;">
 
@@ -1386,7 +1391,7 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
     }
     (() => {
       let quickchartButtonEl =
-        document.querySelector('#df-0efaf535-de70-4ea5-9743-46e50bf2bbcd button');
+        document.querySelector('#df-5182f7cd-8297-4d20-9231-ca9c68f80d4c button');
       quickchartButtonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
     })();
@@ -1423,7 +1428,7 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
 </pre></div>
 </div>
 <div class="output text_html">
-  <div id="df-aeea804b-c86a-402c-bd2e-1864a68381be" class="colab-df-container">
+  <div id="df-8db4aca4-a017-4dfc-8272-e87d00ddc51b" class="colab-df-container">
     <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -1453,41 +1458,41 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
     <tr>
       <th>1</th>
       <td>1.000000</td>
-      <td>0.187445</td>
-      <td>0.093451</td>
-      <td>0.0</td>
-      <td>0.113034</td>
+      <td>0.107657</td>
+      <td>0.053045</td>
+      <td>0.120859</td>
+      <td>0.105355</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>0.187445</td>
+      <td>0.107657</td>
       <td>1.000000</td>
-      <td>0.091315</td>
-      <td>0.0</td>
-      <td>0.084688</td>
+      <td>0.046911</td>
+      <td>0.114786</td>
+      <td>0.063483</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>0.093451</td>
-      <td>0.091315</td>
+      <td>0.053045</td>
+      <td>0.046911</td>
       <td>1.000000</td>
-      <td>0.0</td>
-      <td>0.025255</td>
+      <td>0.069476</td>
+      <td>0.085815</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.0</td>
-      <td>0.000000</td>
+      <td>0.120859</td>
+      <td>0.114786</td>
+      <td>0.069476</td>
+      <td>1.000000</td>
+      <td>0.065109</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>0.113034</td>
-      <td>0.084688</td>
-      <td>0.025255</td>
-      <td>0.0</td>
+      <td>0.105355</td>
+      <td>0.063483</td>
+      <td>0.085815</td>
+      <td>0.065109</td>
       <td>1.000000</td>
     </tr>
   </tbody>
@@ -1496,7 +1501,7 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
     <div class="colab-df-buttons">
 
   <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-aeea804b-c86a-402c-bd2e-1864a68381be')"
+    <button class="colab-df-convert" onclick="convertToInteractive('df-8db4aca4-a017-4dfc-8272-e87d00ddc51b')"
             title="Convert this dataframe to an interactive table."
             style="display:none;">
 
@@ -1548,12 +1553,12 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
 
     <script>
       const buttonEl =
-        document.querySelector('#df-aeea804b-c86a-402c-bd2e-1864a68381be button.colab-df-convert');
+        document.querySelector('#df-8db4aca4-a017-4dfc-8272-e87d00ddc51b button.colab-df-convert');
       buttonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
 
       async function convertToInteractive(key) {
-        const element = document.querySelector('#df-aeea804b-c86a-402c-bd2e-1864a68381be');
+        const element = document.querySelector('#df-8db4aca4-a017-4dfc-8272-e87d00ddc51b');
         const dataTable =
           await google.colab.kernel.invokeFunction('convertToInteractive',
                                                     [key], {});
@@ -1573,8 +1578,8 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
   </div>
 
 
-<div id="df-a85716dc-422b-491b-b63f-38ce536690ae">
-  <button class="colab-df-quickchart" onclick="quickchart('df-a85716dc-422b-491b-b63f-38ce536690ae')"
+<div id="df-4d6e2e77-dae6-482a-92ee-c343b9cd79e1">
+  <button class="colab-df-quickchart" onclick="quickchart('df-4d6e2e77-dae6-482a-92ee-c343b9cd79e1')"
             title="Suggest charts"
             style="display:none;">
 
@@ -1693,7 +1698,7 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
     }
     (() => {
       let quickchartButtonEl =
-        document.querySelector('#df-a85716dc-422b-491b-b63f-38ce536690ae button');
+        document.querySelector('#df-4d6e2e77-dae6-482a-92ee-c343b9cd79e1 button');
       quickchartButtonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
     })();
@@ -1718,7 +1723,7 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
 Requirement already satisfied: matplotlib in /usr/local/lib/python3.10/dist-packages (3.7.1)
 Requirement already satisfied: contourpy&gt;=1.0.1 in /usr/local/lib/python3.10/dist-packages (from matplotlib) (1.2.0)
 Requirement already satisfied: cycler&gt;=0.10 in /usr/local/lib/python3.10/dist-packages (from matplotlib) (0.12.1)
-Requirement already satisfied: fonttools&gt;=4.22.0 in /usr/local/lib/python3.10/dist-packages (from matplotlib) (4.44.0)
+Requirement already satisfied: fonttools&gt;=4.22.0 in /usr/local/lib/python3.10/dist-packages (from matplotlib) (4.45.1)
 Requirement already satisfied: kiwisolver&gt;=1.0.1 in /usr/local/lib/python3.10/dist-packages (from matplotlib) (1.4.5)
 Requirement already satisfied: numpy&gt;=1.20 in /usr/local/lib/python3.10/dist-packages (from matplotlib) (1.23.5)
 Requirement already satisfied: packaging&gt;=20.0 in /usr/local/lib/python3.10/dist-packages (from matplotlib) (23.2)
@@ -1753,7 +1758,7 @@ Requirement already satisfied: six&gt;=1.5 in /usr/local/lib/python3.10/dist-pac
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/8d7864dbd3c81e6115375b40dd3946555774903a03ded55b1be19266dfe50e50.png" src="_images/8d7864dbd3c81e6115375b40dd3946555774903a03ded55b1be19266dfe50e50.png" />
+<img alt="_images/6d2e713d262e5c0e845b9e6021d0331b42353a2419ad6e6066aeed89c4501c8e.png" src="_images/6d2e713d262e5c0e845b9e6021d0331b42353a2419ad6e6066aeed89c4501c8e.png" />
 </div>
 </div>
 </section>
@@ -1777,11 +1782,11 @@ Requirement already satisfied: six&gt;=1.5 in /usr/local/lib/python3.10/dist-pac
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Node 5: Closeness Centrality = 0.75
-Node 4: Closeness Centrality = 0.0
-Node 3: Closeness Centrality = 0.75
-Node 2: Closeness Centrality = 0.75
-Node 1: Closeness Centrality = 0.75
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Node 5: Closeness Centrality = 1.0
+Node 4: Closeness Centrality = 1.0
+Node 3: Closeness Centrality = 1.0
+Node 2: Closeness Centrality = 1.0
+Node 1: Closeness Centrality = 1.0
 </pre></div>
 </div>
 </div>
@@ -1818,11 +1823,11 @@ Node 1: Closeness Centrality = 0.75
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Node 5: Closeness Centrality = 0.75, PageRank = 0.23201176153670036, Eigenvector Centrality = 0.4999999999999837
-Node 4: Closeness Centrality = 0.0, PageRank = 0.036144578313266576, Eigenvector Centrality = 2.559999999999917e-07
-Node 3: Closeness Centrality = 0.75, PageRank = 0.23104145515774954, Eigenvector Centrality = 0.4999999999999837
-Node 2: Closeness Centrality = 0.75, PageRank = 0.24825272094129852, Eigenvector Centrality = 0.4999999999999837
-Node 1: Closeness Centrality = 0.75, PageRank = 0.2525494840509849, Eigenvector Centrality = 0.4999999999999837
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Node 5: Closeness Centrality = 1.0, PageRank = 0.1987999957237204, Eigenvector Centrality = 0.4472135954999579
+Node 4: Closeness Centrality = 1.0, PageRank = 0.20339080069853618, Eigenvector Centrality = 0.4472135954999579
+Node 3: Closeness Centrality = 1.0, PageRank = 0.19325067199568757, Eigenvector Centrality = 0.4472135954999579
+Node 2: Closeness Centrality = 1.0, PageRank = 0.19951725061687023, Eigenvector Centrality = 0.4472135954999579
+Node 1: Closeness Centrality = 1.0, PageRank = 0.2050412809651852, Eigenvector Centrality = 0.4472135954999579
 </pre></div>
 </div>
 </div>
@@ -1913,7 +1918,7 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html">
-  <div id="df-e167debe-4634-4708-bd8d-2405851bdfd8" class="colab-df-container">
+  <div id="df-b18ceb71-16e6-4827-a51f-8b13799223d5" class="colab-df-container">
     <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -1939,103 +1944,103 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
   <tbody>
     <tr>
       <th>0</th>
-      <td>Foto: Aksi Ciamik Para Pebulutangkis Muda BNI ...</td>
-      <td>Pekanbaru - Ajang bulutangkis BNI Sirkuit Nasi...</td>
+      <td>Foto: BNI Sirnas Premier, Ajang Persaingan Par...</td>
+      <td>Jakarta - BNI Sirnas Premier 2023 mulai bergul...</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>Atlet Para Cycling RI Raih 3 Emas di World Abi...</td>
-      <td>Jakarta - Tiga atlet para-cycling Indonesia me...</td>
+      <td>Marc Marquez Ungkap Alasan Sering Jatuh dengan...</td>
+      <td>Jakarta - Marc Marquez mengungkap alasan serin...</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>Dzaky Kalahkan Khadafi, Maju ke 64 Besar BNI S...</td>
-      <td>Pekanbaru - Ajang untuk pebulutangkis muda BNI...</td>
+      <td>Dewa United Banten Pasang Target Juara IBL 2024</td>
+      <td>Jakarta - Klub Dewa United Banten memasang tar...</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>Demi Medali Olimpiade, Gregoria Bertekad Lebih...</td>
-      <td>Jakarta - Gregoria Mariska Tunjung menjadi sal...</td>
+      <td>Sengit, Surya/Revandra Kalahkan Davin/Ozora di...</td>
+      <td>Jakarta - Duel sengit hadir di 32 besar Ganda ...</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>Gregoria Waspadai Faktor Nonteknis di BWF Worl...</td>
-      <td>Jakarta - Pebulutangkis putri Gregoria Mariska...</td>
+      <td>Marc Marquez: Kepergianku dari Honda Jadi Win-...</td>
+      <td>Jakarta - Superstar MotoGP Marc Marquez percay...</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>Jelang World Tour Finals 2023, Bagaimana Otot ...</td>
-      <td>Jakarta - Anthony Sinisuka Ginting mengakui di...</td>
+      <td>Pelatih Pastikan Ginting dan Jojo Prima Jelang...</td>
+      <td>Jakarta - Pelatih tunggal putra, Irwansyah, me...</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>Fadya Kalahkan Celly di 32 Besar BNI Sirnas B ...</td>
-      <td>Pekanbaru - Di ajang bulutangkis BNI Sirnas B ...</td>
+      <td>Michael Owen/Velisha ke 16 Besar BNI Sirnas Pr...</td>
+      <td>Jakarta - Pasangan Michael Owen/Velisha Christ...</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>113 Klub Bulutangkis Nasional Ramaikan BNI Sir...</td>
-      <td>Pekanbaru - Ajang bulutangkis BNI Sirkuit Nasi...</td>
+      <td>BWF World Tour Finals 2023: Tim Bulutangkis In...</td>
+      <td>Jakarta - Tim bulutangkis Indonesia untuk BWF ...</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>Asian Le Mans Series: Sepang Tak Menyenangkan ...</td>
-      <td>Sepang - Putaran pertama Asian Le Mans Series ...</td>
+      <td>Diikuti 5.000 Pelari, PLN Electric Run Bantu K...</td>
+      <td>Jakarta - PT PLN (Persero) sukses menggelar PL...</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>Marc Marquez: Semoga Aku Bisa Jadi Rider Honda...</td>
-      <td>Motegi - Juara dunia MotoGP enam kali Marc Mar...</td>
+      <td>BNI Sirnas Premier Jakarta 2023 Diikuti 762 At...</td>
+      <td>Jakarta - BNI Sirkuit Nasional memasuki seri p...</td>
     </tr>
     <tr>
       <th>10</th>
-      <td>Kalender Lengkap BNI Sirkuit Nasional 2023, Ki...</td>
-      <td>Jakarta - Pekanbaru, Riau, siap menggelar ajan...</td>
+      <td>Arfiansyah Jadi Sorotan di Kejuaraan Atletik P...</td>
+      <td>Jakarta - Kompetisi atletik pelajar, Energen C...</td>
     </tr>
     <tr>
       <th>11</th>
-      <td>Gregoria/Cahyadi Menangi Laga Ekshibisi BNI Br...</td>
-      <td>Jakarta - Aquiritto Jesse Cahyadi/Gregoria Mar...</td>
+      <td>Jalan Sehat Ini Ajak Anak Muda Menabung untuk ...</td>
+      <td>Jakarta - Gaya hidup sehat kini sedang digalak...</td>
     </tr>
     <tr>
       <th>12</th>
-      <td>Hasil BNI Bright Up Cup 2023: Tim Liliyana Men...</td>
-      <td>Jakarta - Tim Liliyana Natsir memenangkan pert...</td>
+      <td>Rossi Akan Bantu Marini Semaksimal Mungkin di ...</td>
+      <td>Jakarta - Luca Marini sudah memutuskan untuk b...</td>
     </tr>
     <tr>
       <th>13</th>
-      <td>BNI Bright Up Cup: Rinov/Mentari Menang, Tim A...</td>
-      <td>Jakarta - Ganda campuran Rinov Rivaldy/Phita H...</td>
+      <td>Menjajal Inovasi Teknologi Canggih di Sepatu Lari</td>
+      <td>Tangerang - Kegiatan lari menjadi gaya hidup y...</td>
     </tr>
     <tr>
       <th>14</th>
-      <td>BNI Bright Up Cup: Eng Hian/Tontowi Sumbang Ke...</td>
-      <td>Jakarta - Eng Hian/Tontowi Ahmad berhasil meny...</td>
+      <td>Bos Ducati Ungkap Perasaan Motornya Diinginkan...</td>
+      <td>Jakarta - Marc Marquez akan menggunakan motor ...</td>
     </tr>
     <tr>
       <th>15</th>
-      <td>Jadi Kontestan Baru IBL, Kesatria Bengawan Sol...</td>
-      <td>Jakarta - Kompetisi Indonesia Basketball Leagu...</td>
+      <td>Kans Gregoria Taklukkan Tai Tzu Ying dan An Se...</td>
+      <td>Jakarta - Turnamen BWF World Tour Finals 2023 ...</td>
     </tr>
     <tr>
       <th>16</th>
-      <td>India International 2023: Dejan/Gloria Juara!</td>
-      <td>Jakarta - Dejan Ferdinansyah/Gloria Emanuelle ...</td>
+      <td>Buka Turnamen Golf, Walkot Cilegon Harap Lahir...</td>
+      <td>Jakarta - Wali Kota Cilegon Helldy Agustian me...</td>
     </tr>
     <tr>
       <th>17</th>
-      <td>BNI Sirnas B Riau 2023 Siap Digelar, Ini Hasil...</td>
-      <td>Jakarta - BNI Sirkuit Nasional 2023 berlanjut ...</td>
+      <td>Rahmat Erwin Boyong Tiga Perak Kualifikasi Oli...</td>
+      <td>Jakarta - Lifter andalan Indonesia Rahmat Erwi...</td>
     </tr>
     <tr>
       <th>18</th>
-      <td>Tekad Anthony Ginting Tutup Akhir Tahun dengan...</td>
-      <td>Jakarta - Anthony Sinisuka Ginting menyimpan t...</td>
+      <td>Hasil One Pride MMA 75: Lipin Sitorus Juara Ba...</td>
+      <td>Jakarta - Divisi atomweight menghadirkan raja ...</td>
     </tr>
     <tr>
       <th>19</th>
-      <td>India International 2023: Head to Head Dejan/G...</td>
-      <td>Jakarta - Dejan Ferdinansyah/Gloria Emanuelle ...</td>
+      <td>Fabio Quartararo Ingin Kembali ke Papan Atas B...</td>
+      <td>Jakarta - Fabio Quartararo mempunyai misi di M...</td>
     </tr>
   </tbody>
 </table>
@@ -2043,7 +2048,7 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
     <div class="colab-df-buttons">
 
   <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-e167debe-4634-4708-bd8d-2405851bdfd8')"
+    <button class="colab-df-convert" onclick="convertToInteractive('df-b18ceb71-16e6-4827-a51f-8b13799223d5')"
             title="Convert this dataframe to an interactive table."
             style="display:none;">
 
@@ -2095,12 +2100,12 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
 
     <script>
       const buttonEl =
-        document.querySelector('#df-e167debe-4634-4708-bd8d-2405851bdfd8 button.colab-df-convert');
+        document.querySelector('#df-b18ceb71-16e6-4827-a51f-8b13799223d5 button.colab-df-convert');
       buttonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
 
       async function convertToInteractive(key) {
-        const element = document.querySelector('#df-e167debe-4634-4708-bd8d-2405851bdfd8');
+        const element = document.querySelector('#df-b18ceb71-16e6-4827-a51f-8b13799223d5');
         const dataTable =
           await google.colab.kernel.invokeFunction('convertToInteractive',
                                                     [key], {});
@@ -2120,8 +2125,8 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
   </div>
 
 
-<div id="df-e12d1624-a791-4906-a754-a7ff1a8127f4">
-  <button class="colab-df-quickchart" onclick="quickchart('df-e12d1624-a791-4906-a754-a7ff1a8127f4')"
+<div id="df-c20e65d7-f9e4-492d-b113-6d2ede46c508">
+  <button class="colab-df-quickchart" onclick="quickchart('df-c20e65d7-f9e4-492d-b113-6d2ede46c508')"
             title="Suggest charts"
             style="display:none;">
 
@@ -2240,7 +2245,7 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
     }
     (() => {
       let quickchartButtonEl =
-        document.querySelector('#df-e12d1624-a791-4906-a754-a7ff1a8127f4 button');
+        document.querySelector('#df-c20e65d7-f9e4-492d-b113-6d2ede46c508 button');
       quickchartButtonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
     })();
@@ -2337,7 +2342,7 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html">
-  <div id="df-25d70f19-e164-47ce-b785-e1cfb99f8c08" class="colab-df-container">
+  <div id="df-4357e6be-ec5e-4c11-b823-fc281e360f58" class="colab-df-container">
     <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -2363,103 +2368,103 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
   <tbody>
     <tr>
       <th>0</th>
-      <td>Dinkes DKI Laporkan Kasus Mycoplasma, Beberapa...</td>
-      <td>Dinkes DKI terima laporan anak terinfeksi myco...</td>
+      <td>Pakar Ungkap Kemungkinan Lonjakan Mycoplasma D...</td>
+      <td>Jakarta - Kementerian Kesehatan RI (Kemenkes) ...</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>Mengenal Hipertiroid: Penyebab, Gejala, dan Pe...</td>
-      <td>Daftar Isi\n\n\n\n\r\n\t\t\t\t\t\t\tPengertian...</td>
+      <td>Warga di Tobelo Halut Makin Mudah Akses Layana...</td>
+      <td>Jakarta - Pasien Puskesmas Pitu kini semakin m...</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>5 Penyebab Batu Ginjal yang Sering Diabaikan, ...</td>
-      <td>Daftar Isi\n\n\n\n\r\n\t\t\t\t\t\t\tPenyebab B...</td>
+      <td>8 Tanda Ginjal Bermasalah pada Wanita yang Har...</td>
+      <td>Daftar Isi\n\n\n\n\r\n\t\t\t\t\t\t\tGejala Gin...</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>Susul Singapura, Kasus Covid-19 Malaysia Naik 57%</td>
-      <td>Selain Singapura, kasus Covid-19 juga meningka...</td>
+      <td>Varian JN.1 Disebut Picu Lonjakan Kasus COVID ...</td>
+      <td>Jakarta - Kementerian Kesehatan Singapura (MOH...</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>Wanita Umur 29 Baru Sadar Punya 2 Rahim Saat M...</td>
-      <td>Jakarta - Seorang wanita Arizona, Amerika Seri...</td>
+      <td>Kasus COVID-19 Nanjak Lagi, Masih Butuh Vaksin...</td>
+      <td>Daftar Isi\n\n\n\n\r\n\t\t\t\t\t\t\tCakupan Va...</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>Cerita Petugas RS China soal Lonjakan Pneumoni...</td>
-      <td>Jakarta - Penyakit pernapasan pneumonia tengah...</td>
+      <td>Survei YLKI: 25,9 Persen Anak-Remaja Minum Min...</td>
+      <td>Jakarta - Yayasan Lembaga Konsumen Indonesia (...</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>Pemerintah Malaysia Minta Warganya Nikah Muda ...</td>
-      <td>Jakarta - Kementerian Perempuan, Keluarga, dan...</td>
+      <td>6 Gejala Penyakit Jantung Koroner, Bisa Muncul...</td>
+      <td>Daftar Isi\n\n\n\n\r\n\t\t\t\t\t\t\tGejala Pen...</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>Rajin Minum Susu Jadi Penangkal Kanker Paru? T...</td>
-      <td>Jakarta - Kanker paru merupakan salah satu jen...</td>
+      <td>Wacana Vaksin COVID-19 Berbayar Tahun Depan, H...</td>
+      <td>Daftar Isi\n\n\n\n\r\n\t\t\t\t\t\t\tHarga vaks...</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>Disebut Picu Lonjakan Kasus COVID di Singapura...</td>
-      <td>Daftar Isi\n\n\n\n\r\n\t\t\t\t\t\t\tGejala Omi...</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>316 Warga Gaza Tewas Pasca Gencatan Senjata Be...</td>
-      <td>Jakarta - Rumah Sakit Nasser di Gaza bagian se...</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>Curhat Dokter Tangani Pasien Muda Usia 9-11 Ta...</td>
-      <td>Jakarta - Nasib perokok pasif selama ini selal...</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>Menkes soal RI Jadi Negara Maju: Masyarakatnya...</td>
-      <td>Jakarta - Menkes Budi Gunadi Sadikin menyataka...</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>Menkes Titip Pesan Buat Gen Z: Rutin Jalan Kak...</td>
-      <td>Jakarta - Kementerian Kesehatan RI meluncurkan...</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>Akselerasi Yankes RI, Sinar Mas Land Hadirkan ...</td>
-      <td>Jakarta - Pandemi COVID-19 dan terus meningkat...</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>Dinkes DKI Laporkan Anak Kena Mycoplasma, Ini ...</td>
-      <td>Jakarta - Dinas Kesehatan (Dinkes) DKI Jakarta...</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>Serba-serbi DBF, Ini Manfaatnya Bagi Ibu dan Bayi</td>
-      <td>Daftar Isi\n\n\n\n\r\n\t\t\t\t\t\t\tNutrisi da...</td>
-    </tr>
-    <tr>
-      <th>16</th>
-      <td>Langkah Ikatan Apoteker Indonesia Cegah Resist...</td>
-      <td>Jakarta - Resistensi antimikroba tercatat seba...</td>
-    </tr>
-    <tr>
-      <th>17</th>
-      <td>WHO Bicara soal Varian Pirola BA.2.86, Disebut...</td>
+      <td>Estimasi Kasus Bunuh Diri di RI Capai 6 Ribu O...</td>
       <td>Jakarta - Organisasi Kesehatan Dunia (WHO) men...</td>
     </tr>
     <tr>
+      <th>9</th>
+      <td>Bos WHO Beberkan Ngerinya Situasi di Gaza: Fas...</td>
+      <td>Jakarta - Dirjen Organisasi Kesehatan Dunia (W...</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Akhir Kisah Pengidap Polio yang Hidup dengan P...</td>
+      <td>Jakarta -\n        \n        Viral kisah wanit...</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Kata Kemenkes RI soal Laporan Terbaru 2 Kasus ...</td>
+      <td>Jakarta - Ada dua kasus kematian akibat COVID-...</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>Epidemiolog Sebut Lonjakan Covid-19 di Dunia B...</td>
+      <td>Kasus Covid-19 di beberapa negara naik lagi. E...</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>Binaragawan Sampai Kurus Kering, Ini yang Terj...</td>
+      <td>Jakarta -\n        \n        Binaragawan di Lo...</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>65 Orang Terkena Mpox di RI, Kemenkes Pastikan...</td>
+      <td>Jakarta - Kementerian Kesehatan RI melaporkan ...</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>BPOM RI Bicara soal Nasib Kratom, Bakal Masuk ...</td>
+      <td>Jakarta - Plt Kepala BPOM RI Lucia Rizka Andal...</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>11 Desember 2023 Memperingati Hari Apa? Ada HU...</td>
+      <td>Daftar Isi\n\n\n\n\r\n\t\t\t\t\t\t\tSejarah UN...</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>Telanjur Pakai Krim Abal-abal? Dokter 'Spill' ...</td>
+      <td>Jakarta - Memiliki wajah putih dan cerah masih...</td>
+    </tr>
+    <tr>
       <th>18</th>
-      <td>Siasat China Hadapi Lonjakan Pneumonia 'Mister...</td>
-      <td>Jakarta - China kini diterpa kenaikan kasus pe...</td>
+      <td>Hidup 60 Tahun di Paru-paru Besi karena Polio,...</td>
+      <td>Jakarta - Seorang wanita di Tennessee, Amerika...</td>
     </tr>
     <tr>
       <th>19</th>
-      <td>Potensi Ekspor Kratom RI Masih Dibahas, Menkes...</td>
-      <td>Jakarta - Belum lama ini, Presiden Joko Widodo...</td>
+      <td>Catat! Daftar 18 Kosmetik Ilegal Mengandung Ba...</td>
+      <td>Jakarta - Badan Pengawas Obat dan Makanan (BPO...</td>
     </tr>
   </tbody>
 </table>
@@ -2467,7 +2472,7 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
     <div class="colab-df-buttons">
 
   <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-25d70f19-e164-47ce-b785-e1cfb99f8c08')"
+    <button class="colab-df-convert" onclick="convertToInteractive('df-4357e6be-ec5e-4c11-b823-fc281e360f58')"
             title="Convert this dataframe to an interactive table."
             style="display:none;">
 
@@ -2519,12 +2524,12 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
 
     <script>
       const buttonEl =
-        document.querySelector('#df-25d70f19-e164-47ce-b785-e1cfb99f8c08 button.colab-df-convert');
+        document.querySelector('#df-4357e6be-ec5e-4c11-b823-fc281e360f58 button.colab-df-convert');
       buttonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
 
       async function convertToInteractive(key) {
-        const element = document.querySelector('#df-25d70f19-e164-47ce-b785-e1cfb99f8c08');
+        const element = document.querySelector('#df-4357e6be-ec5e-4c11-b823-fc281e360f58');
         const dataTable =
           await google.colab.kernel.invokeFunction('convertToInteractive',
                                                     [key], {});
@@ -2544,8 +2549,8 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
   </div>
 
 
-<div id="df-9949e821-7066-4165-8fdd-3a5ba64c11e5">
-  <button class="colab-df-quickchart" onclick="quickchart('df-9949e821-7066-4165-8fdd-3a5ba64c11e5')"
+<div id="df-7f35f8f2-ea1b-4ca2-ab10-3b2e0736e65f">
+  <button class="colab-df-quickchart" onclick="quickchart('df-7f35f8f2-ea1b-4ca2-ab10-3b2e0736e65f')"
             title="Suggest charts"
             style="display:none;">
 
@@ -2664,7 +2669,7 @@ Requirement already satisfied: soupsieve&gt;1.2 in /usr/local/lib/python3.10/dis
     }
     (() => {
       let quickchartButtonEl =
-        document.querySelector('#df-9949e821-7066-4165-8fdd-3a5ba64c11e5 button');
+        document.querySelector('#df-7f35f8f2-ea1b-4ca2-ab10-3b2e0736e65f button');
       quickchartButtonEl.style.display =
         google.colab.kernel.accessAllowed ? 'block' : 'none';
     })();
